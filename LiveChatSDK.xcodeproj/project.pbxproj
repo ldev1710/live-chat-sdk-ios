@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9F848CEC5D48FAA54423C773 /* Pods_LiveChatSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDDE7D3160A35FA86EF14E81 /* Pods_LiveChatSDK.framework */; };
+		C10EDC432C4E6AD70043640F /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C10EDC422C4E6AD70043640F /* SocketIO */; };
 		C13712942C4DF99900D0D9FE /* LCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712932C4DF99900D0D9FE /* LCSession.swift */; };
 		C13712962C4DF9E500D0D9FE /* LCUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712952C4DF9E500D0D9FE /* LCUser.swift */; };
 		C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712972C4DFA3700D0D9FE /* LCSendMessageEnum.swift */; };
@@ -77,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F848CEC5D48FAA54423C773 /* Pods_LiveChatSDK.framework in Frameworks */,
+				C10EDC432C4E6AD70043640F /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +265,9 @@
 			dependencies = (
 			);
 			name = LiveChatSDK;
+			packageProductDependencies = (
+				C10EDC422C4E6AD70043640F /* SocketIO */,
+			);
 			productName = LiveChatSDK;
 			productReference = C18AC9E62C37EC1900576E9D /* LiveChatSDK.framework */;
 			productType = "com.apple.product-type.framework";
@@ -291,6 +296,9 @@
 				Base,
 			);
 			mainGroup = C18AC9DC2C37EC1900576E9D;
+			packageReferences = (
+				C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */,
+			);
 			productRefGroup = C18AC9E72C37EC1900576E9D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -581,6 +589,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C10EDC422C4E6AD70043640F /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C18AC9DD2C37EC1900576E9D /* Project object */;
 }
