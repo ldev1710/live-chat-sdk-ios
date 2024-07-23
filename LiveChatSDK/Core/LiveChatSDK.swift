@@ -27,15 +27,10 @@ public class LiveChatSDK {
             }
             // Create a Socket.IO client
             socket = socketManager.defaultSocket
-            socket!.on(clientEvent: .connect) { data, ack in
-                print("Socket connected")
-            }
-            LCLog.logI(message: "Bat dau")
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
             
             socket!.on(LCConstant.CONFIRM_CONNECT){
                 data,emitter in
-                LCLog.logI(message: "Da confirm")
                 isInitialized = true
                 observingInitSDK(state: LCInitialEnum.SUCCESS, message: "Initial SDK successful!")
             }
@@ -44,7 +39,6 @@ public class LiveChatSDK {
                 let json = data[0] as! [String: Any]
                 LCLog.logI(message: "\(json)")
                 let success = json["status"] as! Bool
-                LCLog.logI(message: "\(json)")
                 isAvailable = success
                 if(!success){
                     observingAuthorize(sucess: false, message: "Un-authorized", lcAccount: nil)
@@ -57,7 +51,6 @@ public class LiveChatSDK {
             }
             
             socket!.connect()
-            LCLog.logI(message: "Da connect")
         })
     }
     
@@ -70,7 +63,9 @@ public class LiveChatSDK {
     }
     
     public static func authorize(apiKey: String){
-        
+        if(isInitialized){
+            socket!.emit(LCConstant.AUTHENTICATION, apiKey)
+        }
     }
     
     public static func addEventListener(listener: LCListener){
