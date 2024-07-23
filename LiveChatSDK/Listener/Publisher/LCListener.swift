@@ -9,7 +9,7 @@ import Foundation
 
 open class LCListener: LCProtocol {
     
-    init() {
+    public init() {
         
     }
     
