@@ -13,27 +13,27 @@ open class LCListener: LCProtocol {
         
     }
     
-    func onReceiveMessage(lcMessage: LCMessage) {
+    open func onReceiveMessage(lcMessage: LCMessage) {
         
     }
     
-    func onGotDetailConversation(messages: [LCMessage]) {
+    open func onGotDetailConversation(messages: [LCMessage]) {
         
     }
     
-    func onInitSDKStateChange(state: LCInitialEnum, message: String) {
+    open func onInitSDKStateChange(state: LCInitialEnum, message: String) {
         
     }
     
-    func onAuthstateChanged(success: Bool, message: String, lcAccount: LCAccount?) {
+    open func onAuthstateChanged(success: Bool, message: String, lcAccount: LCAccount?) {
         
     }
     
-    func onInitialSessionStateChanged(success: Bool, lcSession: LCSession) {
+    open func onInitialSessionStateChanged(success: Bool, lcSession: LCSession) {
         
     }
     
-    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
+    open func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
         
     }
 }
