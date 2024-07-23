@@ -24,9 +24,12 @@ public class LiveChatSDK {
                 LCLog.logI(message: "The library require notification permission!")
                 return
             }
+            LCLog.logI(message: "Bat dau")
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
+            LCLog.logI(message: "Da observe")
             socket.on(LCConstant.CONFIRM_CONNECT){
                 data,emitter in
+                LCLog.logI(message: "Da confirm")
                 isInitialized = true
                 observingInitSDK(state: LCInitialEnum.SUCCESS, message: "Initial SDK successful!")
             }
@@ -47,6 +50,7 @@ public class LiveChatSDK {
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
             }
             socket.connect()
+            LCLog.logI(message: "Da connect")
         })
     }
     
