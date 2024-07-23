@@ -8,6 +8,11 @@
 import Foundation
 
 open class LCListener: LCProtocol {
+    
+    init() {
+        
+    }
+    
     func onReceiveMessage(lcMessage: LCMessage) {
         
     }
