@@ -28,8 +28,6 @@ public class LiveChatSDK {
             let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn")!, config: [
                     .log(true),
                     .compress,
-                    .reconnects(true),
-                    .forceWebsockets(true)
                 ]
             )
 
@@ -40,7 +38,7 @@ public class LiveChatSDK {
             }
             LCLog.logI(message: "Bat dau")
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
-            LCLog.logI(message: "Da observe")
+            
             socket.on(LCConstant.CONFIRM_CONNECT){
                 data,emitter in
                 LCLog.logI(message: "Da confirm")
@@ -82,6 +80,7 @@ public class LiveChatSDK {
     }
     
     public static func addEventListener(listener: LCListener){
+        LCLog.logI(message: "Da add event")
         listeners.append(listener)
     }
     
@@ -107,6 +106,7 @@ public class LiveChatSDK {
     
     public static func observingInitSDK(state: LCInitialEnum, message: String){
         for listener in listeners {
+            LCLog.logI(message: "Da observe")
             listener.onInitSDKStateChange(state: state, message: message)
         }
     }
