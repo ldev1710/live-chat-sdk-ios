@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCListener: LCProtocol {
+open class LCListener: LCProtocol {
     func onReceiveMessage(lcMessage: LCMessage) {
         
     }
