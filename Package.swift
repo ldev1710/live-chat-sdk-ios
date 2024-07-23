@@ -5,6 +5,7 @@ import PackageDescription
 let package = Package(
     name: "LiveChatSDK",
     products: [
+        .library(name: "LiveChatSDK", targets: ["LiveChatSDK"])
     ],
     dependencies: [
         .package(url: "https://github.com/socketio/socket.io-client-swift", .upToNextMinor(from: "16.1.0"))
