@@ -39,7 +39,6 @@ public class LiveChatSDK {
             socket!.on(LCConstant.RESULT_AUTHENTICATION){
                 data,emitter in
                 let json = data[0] as! [String: Any]
-                LCLog.logI(message: "\(json)")
                 let success = json["status"] as! Bool
                 isAvailable = success
                 if(!success){
@@ -49,6 +48,7 @@ public class LiveChatSDK {
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
+                LCLog.logI(message: "\(LCConstant.CLIENT_URL_SOCKET)")
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
                 var supportTypes: [LCSupportType] = []
                 for rawSupportType in rawSupportTypes {
