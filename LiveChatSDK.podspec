@@ -6,10 +6,11 @@ spec.description = "LiveChatSDK easy to create chat bot and support customer"
 spec.homepage = "https://github.com/ldev1710/live-chat-sdk-ios"
 spec.license = { :type => "MIT", :file => "LICENSE" }
 spec.author = { 'LDev' => 'luongdien1211@gmail.com' }
-spec.platform = :ios, "12.0"
+spec.platform = :ios, "11.0"
 spec.swift_version = '5.0'
 spec.source = { :git => "https://github.com/ldev1710/live-chat-sdk-ios.git", :tag => spec.version.to_s }
 spec.source_files = "LiveChatSDK/**/**"
 spec.dependency 'SocketIO'
-#spec.ios.deployment_target = '12.0'
+spec.dependency 'Starscream'
+
 end
