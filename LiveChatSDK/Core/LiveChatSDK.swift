@@ -80,13 +80,49 @@ public class LiveChatSDK {
                         let jsonRaw = data[0] as! [String: Any]
                         let messageRaw = jsonRaw["data"] as! [String:Any]
                         let fromRaw = messageRaw["from"] as! [String:Any]
-                        let contentRaw = messageRaw["content"]
-                        
+                        let contentRaw = messageRaw["content"] as! [String:Any]
+                        let lCMessage = LCMessage(
+                            id: messageRaw["id"] as! Int,
+                            content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                            from: LCSender(
+                                id: fromRaw["id"] as! String,
+                                name: fromRaw["name"] as! String
+                            ),
+                            timeCreated: messageRaw["created_at"] as! String
+                        )
+                        observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil)
                     }
+                    socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION){
+                        data, ack in
+                        let jsonData = data[0] as! [String: String]
+                        let sessionId = jsonData["session_id"]
+                        let visitorJid = jsonData["visitor_jid"]
+                        observingInitialSession(sucess: true, lcSession: LCSession(sessionId: sessionId!, visitorJid: visitorJid!))
+                    }
+                    socketClient?.connect()
                 } catch {
                     
                 }
             }
+            
+            socket!.on(LCConstant.RESULT_GET_MESSAGES) {
+                data, ack in
+                let jsonData = data[0] as! [String: Any]
+                let rawMessages = jsonData["data"] as! [Any]
+                var messages: [LCMessage] = []
+                for rawMessage in rawMessages {
+                    let jsonMessage = rawMessage as! [String:Any]
+                    let message = LCMessage(
+                        id: jsonMessage["id"] as! Int,
+                        content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
+                        from: LCSender(id: jsonMessage["id"] as! String, name: jsonMessage["name"] as! String),
+                        timeCreated: jsonMessage["created_at"] as! String
+                    )
+                    messages.append(message)
+                }
+                observingGotMessages(messages: messages)
+            }
+            
             socket!.connect()
         })
     }

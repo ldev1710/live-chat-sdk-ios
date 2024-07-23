@@ -24,6 +24,7 @@
 		C13712B32C4E0C6400D0D9FE /* LCLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712B22C4E0C6400D0D9FE /* LCLog.swift */; };
 		C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712B42C4E106300D0D9FE /* LCConstant.swift */; };
 		C13C91192C4F5200002F7990 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C13C91182C4F5200002F7990 /* SocketIO */; };
+		C14654D82C4FB7AB00A66B9B /* LCParseUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14654D72C4FB7AB00A66B9B /* LCParseUtil.swift */; };
 		C18AC9EA2C37EC1900576E9D /* LiveChatSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = C18AC9E92C37EC1900576E9D /* LiveChatSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C18AC9F12C37EC3500576E9D /* LiveChatFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */; };
 		C18AC9F42C37EC6E00576E9D /* LiveChatSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */; };
@@ -61,6 +62,7 @@
 		C13712B02C4E00EF00D0D9FE /* LCListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCListener.swift; sourceTree = "<group>"; };
 		C13712B22C4E0C6400D0D9FE /* LCLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCLog.swift; sourceTree = "<group>"; };
 		C13712B42C4E106300D0D9FE /* LCConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCConstant.swift; sourceTree = "<group>"; };
+		C14654D72C4FB7AB00A66B9B /* LCParseUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCParseUtil.swift; sourceTree = "<group>"; };
 		C18AC9E62C37EC1900576E9D /* LiveChatSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LiveChatSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C18AC9E92C37EC1900576E9D /* LiveChatSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LiveChatSDK.h; sourceTree = "<group>"; };
 		C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChatFactory.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 			children = (
 				C13712B22C4E0C6400D0D9FE /* LCLog.swift */,
 				C13712B42C4E106300D0D9FE /* LCConstant.swift */,
+				C14654D72C4FB7AB00A66B9B /* LCParseUtil.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				C13712AF2C4DFEBD00D0D9FE /* LCSupportType.swift in Sources */,
 				C13712A42C4DFB8700D0D9FE /* LCFile.swift in Sources */,
 				C137129A2C4DFA9400D0D9FE /* LCSender.swift in Sources */,
+				C14654D82C4FB7AB00A66B9B /* LCParseUtil.swift in Sources */,
 				C13712B12C4E00EF00D0D9FE /* LCListener.swift in Sources */,
 				C13712A82C4DFCEB00D0D9FE /* LCProtocol.swift in Sources */,
 				C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */,
