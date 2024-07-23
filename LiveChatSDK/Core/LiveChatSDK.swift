@@ -16,6 +16,8 @@ public class LiveChatSDK {
     private static let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!)
     private static var socket: SocketIOClient?
     private static var socketManagerClient: SocketManager?
+    private static var socketClient: SocketIOClient?
+    private static var currLCAccount: LCAccount?
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -48,8 +50,43 @@ public class LiveChatSDK {
                 let jsonData = dataResp["data"] as! [String:Any]
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
+                var supportTypes: [LCSupportType] = []
+                for rawSupportType in rawSupportTypes {
+                    let jsonSpt = rawSupportType as! [String: String]
+                    let lcSpt = LCSupportType(id: jsonSpt["id"]!, name: jsonSpt["name"]!)
+                    supportTypes.append(lcSpt)
+                }
+                currLCAccount = LCAccount(
+                    id: jsonData["id"] as! Int,
+                    groupId: jsonData["groupid"] as! Int,
+                    groupName: jsonData["group_name"] as! String,
+                    socketDomain: jsonData["domain_socket"] as! String,
+                    hostName: jsonData["for_domain"] as! String,
+                    supportType: supportTypes
+                )
+                do {
+                    socketManagerClient = SocketManager(socketURL: URL(string: LCConstant.CLIENT_URL_SOCKET)!)
+                    socketClient = socketManagerClient?.defaultSocket
+                    socketClient!.on(LCConstant.CONFIRM_CONNECT){
+                        data, ack in
+                        observingAuthorize(sucess: true, message: "Authorization successful", lcAccount: currLCAccount)
+                    }
+                    socketClient!.on(LCConstant.RECEIVE_MESSAGE){
+                        data, ack in
+                        
+                    }
+                    socketClient!.on(LCConstant.CONFIRM_SEND_MESSAGE){
+                        data, ack in
+                        let jsonRaw = data[0] as! [String: Any]
+                        let messageRaw = jsonRaw["data"] as! [String:Any]
+                        let fromRaw = messageRaw["from"] as! [String:Any]
+                        let contentRaw = messageRaw["content"]
+                        
+                    }
+                } catch {
+                    
+                }
             }
-            
             socket!.connect()
         })
     }
