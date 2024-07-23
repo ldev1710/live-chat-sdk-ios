@@ -63,7 +63,7 @@ public class LiveChatSDK {
     }
     
     public static func addEventListener(listener: LCListener){
-        
+        listeners.append(listener)
     }
     
     public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
