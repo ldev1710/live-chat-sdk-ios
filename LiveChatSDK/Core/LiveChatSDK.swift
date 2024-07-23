@@ -28,6 +28,8 @@ public class LiveChatSDK {
             let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn")!, config: [
                     .log(true),
                     .compress,
+                    .reconnects(true),
+                    .forceWebsockets(true)
                 ]
             )
 
