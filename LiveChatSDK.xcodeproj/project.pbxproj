@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9F848CEC5D48FAA54423C773 /* Pods_LiveChatSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDDE7D3160A35FA86EF14E81 /* Pods_LiveChatSDK.framework */; };
-		C10EDC432C4E6AD70043640F /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C10EDC422C4E6AD70043640F /* SocketIO */; };
 		C13712942C4DF99900D0D9FE /* LCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712932C4DF99900D0D9FE /* LCSession.swift */; };
 		C13712962C4DF9E500D0D9FE /* LCUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712952C4DF9E500D0D9FE /* LCUser.swift */; };
 		C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712972C4DFA3700D0D9FE /* LCSendMessageEnum.swift */; };
@@ -25,6 +23,7 @@
 		C13712B12C4E00EF00D0D9FE /* LCListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712B02C4E00EF00D0D9FE /* LCListener.swift */; };
 		C13712B32C4E0C6400D0D9FE /* LCLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712B22C4E0C6400D0D9FE /* LCLog.swift */; };
 		C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712B42C4E106300D0D9FE /* LCConstant.swift */; };
+		C13C91192C4F5200002F7990 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C13C91182C4F5200002F7990 /* SocketIO */; };
 		C18AC9EA2C37EC1900576E9D /* LiveChatSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = C18AC9E92C37EC1900576E9D /* LiveChatSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C18AC9F12C37EC3500576E9D /* LiveChatFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */; };
 		C18AC9F42C37EC6E00576E9D /* LiveChatSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */; };
@@ -46,7 +45,6 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		31306B23CDF7C8B41E54AD0F /* Pods-LiveChatSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.debug.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C13712932C4DF99900D0D9FE /* LCSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCSession.swift; sourceTree = "<group>"; };
 		C13712952C4DF9E500D0D9FE /* LCUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCUser.swift; sourceTree = "<group>"; };
 		C13712972C4DFA3700D0D9FE /* LCSendMessageEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCSendMessageEnum.swift; sourceTree = "<group>"; };
@@ -68,8 +66,6 @@
 		C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChatFactory.swift; sourceTree = "<group>"; };
 		C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChatSDK.swift; sourceTree = "<group>"; };
 		C1ABB3DC2C40E7A4009CAF27 /* LCMessaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessaging.swift; sourceTree = "<group>"; };
-		C7DA37B9983574F33C2E1651 /* Pods-LiveChatSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.release.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.release.xcconfig"; sourceTree = "<group>"; };
-		DDDE7D3160A35FA86EF14E81 /* Pods_LiveChatSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveChatSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,31 +73,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F848CEC5D48FAA54423C773 /* Pods_LiveChatSDK.framework in Frameworks */,
-				C10EDC432C4E6AD70043640F /* SocketIO in Frameworks */,
+				C13C91192C4F5200002F7990 /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		31D062A5DD25E44A0E786ED5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				31306B23CDF7C8B41E54AD0F /* Pods-LiveChatSDK.debug.xcconfig */,
-				C7DA37B9983574F33C2E1651 /* Pods-LiveChatSDK.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		A920CAC1889C5C2CF7C9363E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DDDE7D3160A35FA86EF14E81 /* Pods_LiveChatSDK.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		C137128D2C4DF94900D0D9FE /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,8 +170,6 @@
 			children = (
 				C18AC9E82C37EC1900576E9D /* LiveChatSDK */,
 				C18AC9E72C37EC1900576E9D /* Products */,
-				31D062A5DD25E44A0E786ED5 /* Pods */,
-				A920CAC1889C5C2CF7C9363E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -253,7 +229,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C18AC9ED2C37EC1900576E9D /* Build configuration list for PBXNativeTarget "LiveChatSDK" */;
 			buildPhases = (
-				2D620A491F9F42FE2E2C436C /* [CP] Check Pods Manifest.lock */,
 				C18AC9E12C37EC1900576E9D /* Headers */,
 				C18AC9E22C37EC1900576E9D /* Sources */,
 				C18AC9E32C37EC1900576E9D /* Frameworks */,
@@ -266,7 +241,7 @@
 			);
 			name = LiveChatSDK;
 			packageProductDependencies = (
-				C10EDC422C4E6AD70043640F /* SocketIO */,
+				C13C91182C4F5200002F7990 /* SocketIO */,
 			);
 			productName = LiveChatSDK;
 			productReference = C18AC9E62C37EC1900576E9D /* LiveChatSDK.framework */;
@@ -297,7 +272,7 @@
 			);
 			mainGroup = C18AC9DC2C37EC1900576E9D;
 			packageReferences = (
-				C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */,
+				C13C91172C4F5200002F7990 /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			productRefGroup = C18AC9E72C37EC1900576E9D /* Products */;
 			projectDirPath = "";
@@ -317,31 +292,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		2D620A491F9F42FE2E2C436C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-LiveChatSDK-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C18AC9E22C37EC1900576E9D /* Sources */ = {
@@ -500,7 +450,6 @@
 		};
 		C18AC9EE2C37EC1900576E9D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31306B23CDF7C8B41E54AD0F /* Pods-LiveChatSDK.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -514,7 +463,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -526,16 +475,19 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vn.build.mitek.LiveChatSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		C18AC9EF2C37EC1900576E9D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7DA37B9983574F33C2E1651 /* Pods-LiveChatSDK.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -549,7 +501,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -561,9 +513,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vn.build.mitek.LiveChatSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -591,20 +547,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */ = {
+		C13C91172C4F5200002F7990 /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = 15.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C10EDC422C4E6AD70043640F /* SocketIO */ = {
+		C13C91182C4F5200002F7990 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C10EDC412C4E6AD70043640F /* XCRemoteSwiftPackageReference "socket" */;
+			package = C13C91172C4F5200002F7990 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
 		};
 /* End XCSwiftPackageProductDependency section */
