@@ -25,7 +25,7 @@ public class LiveChatSDK {
                 return
             }
             // Create a Socket.IO manager instance
-            let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn")!, config: [
+            let socketManager = SocketManager(socketURL: URL(string: "http://192.168.10.77:3000")!, config: [
                     .log(true),
                     .compress,
                 ]
