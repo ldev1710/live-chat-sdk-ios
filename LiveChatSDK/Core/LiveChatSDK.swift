@@ -13,8 +13,9 @@ public class LiveChatSDK {
     private static var isInitialized = false
     private static var isAvailable = false
     private static var listeners: [LCListener] = []
-//    private static var socket: SocketIOClient = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!).defaultSocket
-    private static var socketClient: SocketManager?
+    private static let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!)
+    private static var socket: SocketIOClient?
+    private static var socketManagerClient: SocketManager?
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -24,28 +25,21 @@ public class LiveChatSDK {
                 LCLog.logI(message: "The library require notification permission!")
                 return
             }
-            // Create a Socket.IO manager instance
-            let socketManager = SocketManager(socketURL: URL(string: "http://192.168.10.77:3000")!, config: [
-                    .log(true),
-                    .compress,
-                ]
-            )
-
             // Create a Socket.IO client
-            let socket = socketManager.defaultSocket
-            socket.on(clientEvent: .connect) { data, ack in
+            socket = socketManager.defaultSocket
+            socket!.on(clientEvent: .connect) { data, ack in
                 print("Socket connected")
             }
             LCLog.logI(message: "Bat dau")
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
             
-            socket.on(LCConstant.CONFIRM_CONNECT){
+            socket!.on(LCConstant.CONFIRM_CONNECT){
                 data,emitter in
                 LCLog.logI(message: "Da confirm")
                 isInitialized = true
                 observingInitSDK(state: LCInitialEnum.SUCCESS, message: "Initial SDK successful!")
             }
-            socket.on(LCConstant.RESULT_AUTHENTICATION){
+            socket!.on(LCConstant.RESULT_AUTHENTICATION){
                 data,emitter in
                 let json = data[0] as! [String: Any]
                 LCLog.logI(message: "\(json)")
@@ -62,7 +56,7 @@ public class LiveChatSDK {
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
             }
             
-            socket.connect()
+            socket!.connect()
             LCLog.logI(message: "Da connect")
         })
     }
