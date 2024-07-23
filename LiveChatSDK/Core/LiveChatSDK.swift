@@ -13,7 +13,7 @@ public class LiveChatSDK {
     private static var isInitialized = false
     private static var isAvailable = false
     private static var listeners: [LCListener] = []
-    private static var socket: SocketIOClient = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!).defaultSocket
+//    private static var socket: SocketIOClient = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!).defaultSocket
     private static var socketClient: SocketManager?
     
     public static func initializeSDK() {
@@ -23,6 +23,14 @@ public class LiveChatSDK {
             if(!isGranted){
                 LCLog.logI(message: "The library require notification permission!")
                 return
+            }
+            // Create a Socket.IO manager instance
+            let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!, config: [.log(true), .compress])
+
+            // Create a Socket.IO client
+            let socket = socketManager.defaultSocket
+            socket.on(clientEvent: .connect) { data, ack in
+                print("Socket connected")
             }
             LCLog.logI(message: "Bat dau")
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
@@ -49,6 +57,7 @@ public class LiveChatSDK {
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
             }
+            
             socket.connect()
             LCLog.logI(message: "Da connect")
         })
