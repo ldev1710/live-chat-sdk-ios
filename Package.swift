@@ -16,7 +16,7 @@ let package = Package(
             name: "LiveChatSDK",
             dependencies: [
                 "SocketIO",
-                .product(name: "FirebaseMessaging", package: "Firebase"),
+                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
             ],
             path: "./LiveChatSDK"
         ),
