@@ -112,6 +112,7 @@ public class LiveChatSDK {
             socket!.on(LCConstant.RESULT_GET_MESSAGES) {
                 data, ack in
                 let jsonData = data[0] as! [String: Any]
+                LCLog.logI(message: "\(jsonData)")
                 let rawMessages = jsonData["data"] as! [Any]
                 var messages: [LCMessage] = []
                 for rawMessage in rawMessages {
