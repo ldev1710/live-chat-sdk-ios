@@ -45,9 +45,9 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                 }
             }
             let contentRaw = dataDict["content"] as! String
-            let contentDict = convertToDictionary(text: contentRaw)
+            let contentDict = LCParseUtil.convertToDictionary(text: contentRaw)
             let fromRaw = dataDict["sender"] as! String
-            let fromDict = convertToDictionary(text: fromRaw)
+            let fromDict = LCParseUtil.convertToDictionary(text: fromRaw)
             let lcMessage = LCMessage(
                 id: Int(dataDict["id"] as! String) ?? 0,
                 content: LCParseUtil.contentFrom(contentRaw: contentDict),
@@ -63,18 +63,6 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
         }
         completionHandler(UIBackgroundFetchResult.newData)
     }
-    
-    func convertToDictionary(text: String) -> [String: Any] {
-        if let data = text.data(using: .utf8) {
-            do {
-                return try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        return [:]
-    }
-
     
 }
 

@@ -289,7 +289,7 @@ public class LiveChatSDK {
         let task = session.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 LCLog.logI(message:"Error: \(String(describing: error))")
-                
+                observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: nil, errorMessage: String(describing: error))
                 return
             }
             
@@ -298,8 +298,21 @@ public class LiveChatSDK {
             }
             
             let responseString = String(data: data, encoding: .utf8)
+            let respDict = LCParseUtil.convertToDictionary(text: responseString!)
             LCLog.logI(message:"Response: \(responseString ?? "")")
-            observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: <#T##LCMessage?#>, errorMessage: <#T##String?#>)
+            let dataDict = respDict["data"] as! [String: Any]
+            let fromRaw = dataDict["from"] as! [String:Any]
+            let contentRaw = dataDict["content"] as! [String:Any]
+            let lcMessage = LCMessage(
+                id: dataDict["id"] as! Int,
+                content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                from: LCSender(
+                    id: fromRaw["id"] as! String,
+                    name: fromRaw["name"] as! String
+                ),
+                timeCreated: dataDict["created_at"] as! String
+            )
+            observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lcMessage, errorMessage: nil)
         }
         
         task.resume()
