@@ -17,8 +17,8 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
     }
     
     open func application(_ application: UIApplication,
-                              didReceiveRemoteNotification data: [AnyHashable: Any],
-                              fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+                          didReceiveRemoteNotification data: [AnyHashable: Any],
+                          fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LCLog.logI(message: "Framework received data message: \(data)")
         do {
             var dataDict: [String:Any] = [:]
@@ -51,21 +51,42 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                     }
                 }
             }
-            let contentRaw = dataDict["content"] as! [String:Any]
-            let fromRaw = dataDict["sender"] as! [String: Any]
+            let contentRaw = dataDict["content"] as! String
+            let contentDict = convertToDictionary(text: contentRaw)
+            let fromRaw = dataDict["sender"] as! String
+            let fromDict = convertToDictionary(text: fromRaw)
             let lcMessage = LCMessage(
                 id: dataDict["id"] as! Int,
-                content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                content: LCParseUtil.contentFrom(contentRaw: contentDict),
                 from: LCSender(
-                    id: fromRaw["id"] as! String,
-                    name: fromRaw["name"] as! String
+                    id: fromDict["id"] as! String,
+                    name: fromDict["name"] as! String
                 ),
-                timeCreated: fromRaw["created_at"] as! String
+                timeCreated: data["created_at"] as! String
             )
             LiveChatSDK.observingMessage(lcMesasge: lcMessage)
         } catch{
             LCLog.logI(message: "Error parse data \(error)")
         }
         completionHandler(UIBackgroundFetchResult.newData)
+    }
+    
+    func convertToDictionary(text: String) -> [String: Any] {
+        if let data = text.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return [:]
+    }
+
+    
+}
+
+extension String {
+    func trim() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
