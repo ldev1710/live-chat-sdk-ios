@@ -113,12 +113,11 @@ public class LiveChatSDK {
             socket!.on(LCConstant.RESULT_GET_MESSAGES) {
                 data, ack in
                 let jsonData = data[0] as! [String: Any]
-                LCLog.logI(message: "\(jsonData)")
                 let rawMessages = jsonData["data"] as! [Any]
                 var messages: [LCMessage] = []
                 for rawMessage in rawMessages {
                     let jsonMessage = rawMessage as! [String:Any]
-                    let fromRaw = jsonMessage["from"] as! [String:String]
+                    let fromRaw = jsonMessage["from"] as! [String:Any]
                     let message = LCMessage(
                         id: jsonMessage["id"] as! Int,
                         content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
