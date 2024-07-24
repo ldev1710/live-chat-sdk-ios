@@ -8,6 +8,8 @@
 import Foundation
 import UserNotifications
 import SocketIO
+import Firebase
+
 public class LiveChatSDK {
     
     private static var isInitialized = false
@@ -64,45 +66,43 @@ public class LiveChatSDK {
                     hostName: jsonData["for_domain"] as! String,
                     supportType: supportTypes
                 )
-                do {
-                    socketManagerClient = SocketManager(socketURL: URL(string: LCConstant.CLIENT_URL_SOCKET)!)
-                    socketClient = socketManagerClient?.defaultSocket
-                    socketClient!.on(LCConstant.CONFIRM_CONNECT){
-                        data, ack in
-                        observingAuthorize(sucess: true, message: "Authorization successful", lcAccount: currLCAccount)
-                    }
-                    socketClient!.on(LCConstant.RECEIVE_MESSAGE){
-                        data, ack in
-                        
-                    }
-                    socketClient!.on(LCConstant.CONFIRM_SEND_MESSAGE){
-                        data, ack in
-                        let jsonRaw = data[0] as! [String: Any]
-                        let messageRaw = jsonRaw["data"] as! [String:Any]
-                        let fromRaw = messageRaw["from"] as! [String:Any]
-                        let contentRaw = messageRaw["content"] as! [String:Any]
-                        let lCMessage = LCMessage(
-                            id: messageRaw["id"] as! Int,
-                            content: LCParseUtil.contentFrom(contentRaw: contentRaw),
-                            from: LCSender(
-                                id: fromRaw["id"] as! String,
-                                name: fromRaw["name"] as! String
-                            ),
-                            timeCreated: messageRaw["created_at"] as! String
-                        )
-                        observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil)
-                    }
-                    socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION){
-                        data, ack in
-                        let jsonData = data[0] as! [String: String]
-                        let sessionId = jsonData["session_id"]
-                        let visitorJid = jsonData["visitor_jid"]
-                        observingInitialSession(sucess: true, lcSession: LCSession(sessionId: sessionId!, visitorJid: visitorJid!))
-                    }
-                    socketClient?.connect()
-                } catch {
+                
+                socketManagerClient = SocketManager(socketURL: URL(string: LCConstant.CLIENT_URL_SOCKET)!)
+                socketClient = socketManagerClient?.defaultSocket
+                socketClient!.on(LCConstant.CONFIRM_CONNECT){
+                    data, ack in
+                    observingAuthorize(sucess: true, message: "Authorization successful", lcAccount: currLCAccount)
+                }
+                socketClient!.on(LCConstant.RECEIVE_MESSAGE){
+                    data, ack in
                     
                 }
+                socketClient!.on(LCConstant.CONFIRM_SEND_MESSAGE){
+                    data, ack in
+                    let jsonRaw = data[0] as! [String: Any]
+                    let messageRaw = jsonRaw["data"] as! [String:Any]
+                    let fromRaw = messageRaw["from"] as! [String:Any]
+                    let contentRaw = messageRaw["content"] as! [String:Any]
+                    let lCMessage = LCMessage(
+                        id: messageRaw["id"] as! Int,
+                        content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                        from: LCSender(
+                            id: fromRaw["id"] as! String,
+                            name: fromRaw["name"] as! String
+                        ),
+                        timeCreated: messageRaw["created_at"] as! String
+                    )
+                    observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil)
+                }
+                socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION){
+                    data, ack in
+                    let jsonData = data[0] as! [String: Any]
+                    let success = jsonData["status"] as! Bool
+                    let sessionId = jsonData["session_id"] as! String
+                    let visitorJid = jsonData["visitor_jid"] as! String
+                    observingInitialSession(sucess: success, lcSession: LCSession(sessionId: sessionId, visitorJid: visitorJid))
+                }
+                socketClient?.connect()
             }
             
             socket!.on(LCConstant.RESULT_GET_MESSAGES) {
@@ -128,11 +128,50 @@ public class LiveChatSDK {
     }
     
     public static func sendFileMessage(paths: [String], lcUser: LCUser, lcSession: LCSession){
+        let url = URL(string: "https://s01-livechat-dev.midesk.vn/upload")!
+        var files:[URL] = []
+        for path in paths {
+            files.append(URL(fileURLWithPath: path))
+        }
         
+        let parameters:[String:String] = [
+            "add_message_archive": "",
+            "groupid": String(currLCAccount?.groupId ?? 0),
+            "reply":"0",
+            "type":"live-chat-sdk",
+            "from": lcSession.visitorJid,
+            "name": lcUser.fullName,
+            "session_id": lcSession.sessionId,
+            "host_name": currLCAccount?.hostName ?? "",
+            "visitor_jid": lcSession.visitorJid,
+            "is_file":"1",
+        ]
+
+        uploadFiles(url: url, files: files, parameters: parameters)
+
     }
     
     public static func initializeSession(user: LCUser, supportType: LCSupportType){
-        
+        if(isValid()){
+            Messaging.messaging().token { token, error in
+              if let error = error {
+                  LCLog.logI(message: "Error fetching FCM registration token: \(error)")
+              } else if let token = token {
+                  LCLog.logI(message: token)
+                  var body:[String:Any] = [:]
+                  body[base64(text: "groupid")] = currLCAccount?.groupId
+                  body[base64(text: "host_name")] = currLCAccount?.hostName
+                  body[base64(text: "visitor_name")] = user.fullName
+                  body[base64(text: "visitor_email")] = user.email
+                  body[base64(text: "type")] = "live-chat-sdk"
+                  body[base64(text: "visitor_phone")] = user.phone
+                  body[base64(text: "url_visit")] = user.deviceName
+                  body[base64(text: "token")] = token
+                  body[base64(text: "support_type_id")] = supportType.id
+                  socketClient?.emit(LCConstant.INITIALIZE_SESSION,body)
+              }
+            }
+        }
     }
     
     public static func authorize(apiKey: String){
@@ -142,16 +181,38 @@ public class LiveChatSDK {
     }
     
     public static func addEventListener(listener: LCListener){
-        LCLog.logI(message: "Da add event")
         listeners.append(listener)
     }
     
     public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
-        
+        if(isValid()){
+            observingSendMessage(state: LCSendMessageEnum.SENDING, message: nil, errorMessage: nil)
+            var body:[String:Any] = [:]
+            body[base64(text: "groupid")] = currLCAccount?.groupId
+            body[base64(text: "host_name")] = currLCAccount?.hostName
+            body[base64(text: "body")] = message.content
+            body[base64(text: "add_message_archive")] = ""
+            body[base64(text: "reply")] = 0
+            body[base64(text: "type")] = "live-chat-sdk"
+            body[base64(text: "from")] = message.lcSession.visitorJid
+            body[base64(text: "name")] = lcUser.fullName
+            body[base64(text: "session_id")] = message.lcSession.sessionId
+            body[base64(text: "visitor_jid")] = message.lcSession.visitorJid
+            body[base64(text: "is_file")] = 0
+            socketClient?.emit(LCConstant.SEND_MESSAGE,body)
+        }
     }
     
     public static func getMessages(sessionId: String, offset: Int = 0, limit: Int = 5){
-        
+        if(isValid()){
+            var body:[String:Any] = [:]
+            body[base64(text: "groupid")] = currLCAccount?.groupId
+            body[base64(text: "host_name")] = currLCAccount?.hostName
+            body[base64(text: "session_id")] = sessionId
+            body[base64(text: "offset")] = offset
+            body[base64(text: "limit")] = limit
+            socketClient?.emit(LCConstant.GET_MESSAGES,body)
+        }
     }
     
     public static func observingMessage(lcMesasge:LCMessage){
@@ -198,5 +259,72 @@ public class LiveChatSDK {
         }
         return true
     }
+    
+    private static func base64(text: String) -> String {
+        if let data = text.data(using: .utf8) {
+            let base64encoded = data.base64EncodedString()
+            return base64encoded
+        }
+        return "\(text): None"
+    }
+    
+    private static func uploadFiles(url: URL, files: [URL], parameters: [String: String]) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let boundary = UUID().uuidString
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        let body = createBody(with: parameters, files: files, boundary: boundary)
+        request.httpBody = body
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                LCLog.logI(message:"Error: \(String(describing: error))")
+                
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                LCLog.logI(message:"Status code: \(httpResponse.statusCode)")
+            }
+            
+            let responseString = String(data: data, encoding: .utf8)
+            LCLog.logI(message:"Response: \(responseString ?? "")")
+        }
+        
+        task.resume()
+    }
+
+    private static func createBody(with parameters: [String: String], files: [URL], boundary: String) -> Data {
+        var body = Data()
+        
+        for (key, value) in parameters {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
+        }
+        
+        for fileURL in files {
+            let filename = fileURL.lastPathComponent
+            let mimetype = "application/octet-stream" // Luôn sử dụng "application/octet-stream" cho mọi loại file
+            
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
+            
+            if let fileData = try? Data(contentsOf: fileURL) {
+                body.append(fileData)
+            }
+            
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        return body
+    }
+
     
 }
