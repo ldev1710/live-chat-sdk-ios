@@ -35,4 +35,8 @@ public class LiveChatFactory {
     public static func getMessages(sessionId: String, offset: Int = 0, limit: Int = 5){
         LiveChatSDK.getMessages(sessionId: sessionId,offset: offset,limit: limit)
     }
+    
+    public static func enableDebug(isEnable: Bool){
+        LiveChatSDK.enableDebug(isEnable: isEnable)
+    }
 }

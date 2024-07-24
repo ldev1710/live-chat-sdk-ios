@@ -13,6 +13,7 @@ import Firebase
 public class LiveChatSDK {
     
     private static var isInitialized = false
+    public static var isDebuging = false
     private static var isAvailable = false
     private static var listeners: [LCListener] = []
     private static let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!)
@@ -100,6 +101,9 @@ public class LiveChatSDK {
                     let success = jsonData["status"] as! Bool
                     let sessionId = jsonData["session_id"] as! String
                     let visitorJid = jsonData["visitor_jid"] as! String
+                    Messaging.messaging().subscribe(toTopic: sessionId) { error in
+                        LCLog.logI(message: "Has subscribe to topic: \(sessionId)")
+                    }
                     observingInitialSession(sucess: success, lcSession: LCSession(sessionId: sessionId, visitorJid: visitorJid))
                 }
                 socketClient?.connect()
@@ -325,6 +329,8 @@ public class LiveChatSDK {
         
         return body
     }
-
+    public static func enableDebug(isEnable: Bool){
+        isDebuging = isEnable
+    }
     
 }

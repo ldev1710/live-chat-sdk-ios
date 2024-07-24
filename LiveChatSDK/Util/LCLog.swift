@@ -11,6 +11,8 @@ public class LCLog {
     private static var TAG = "Live-Chat-SDK-Log"
     
     static func logI(message: String){
-        debugPrint(TAG+": \(message)")
+        if(LiveChatSDK.isDebuging){
+            print(TAG+": \(message)")
+        }
     }
 }
