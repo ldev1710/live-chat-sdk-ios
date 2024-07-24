@@ -10,26 +10,15 @@ import UserNotifications
 import Firebase
 import UIKit
 
-public class LCMessaging: NSObject, MessagingDelegate {
+open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
     
     public func configure() {
         FirebaseApp.configure()
         FirebaseConfiguration.shared.setLoggerLevel(.min)
-        Messaging.messaging().delegate = self
+        UNUserNotificationCenter.current().delegate = self
     }
     
-    public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-      print("Firebase registration token: \(String(describing: fcmToken))")
-
-      let dataDict: [String: String] = ["token": fcmToken ?? ""]
-      NotificationCenter.default.post(
-        name: Notification.Name("FCMToken"),
-        object: nil,
-        userInfo: dataDict
-      )
-    }
-    
-    public func application(_ application: UIApplication,
+    open func application(_ application: UIApplication,
                               didReceiveRemoteNotification data: [AnyHashable: Any],
                               fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LCLog.logI(message: "Framework received data message: \(data)")
