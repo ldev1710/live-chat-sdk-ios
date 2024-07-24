@@ -21,10 +21,16 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                               fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LCLog.logI(message: "Framework received data message: \(data)")
         do {
-            let contentRaw = data["content"] as! [String:Any]
-            let fromRaw = data["sender"] as! [String: Any]
+            let dataDict = Dictionary(uniqueKeysWithValues: data.compactMap { k, v -> (String, Any)? in
+                if let ks = k as? String {
+                    return (ks, v)
+                }
+                return nil
+            })
+            let contentRaw = dataDict["content"] as! [String:Any]
+            let fromRaw = dataDict["sender"] as! [String: Any]
             let lcMessage = LCMessage(
-                id: data["id"] as! Int,
+                id: dataDict["id"] as! Int,
                 content: LCParseUtil.contentFrom(contentRaw: contentRaw),
                 from: LCSender(
                     id: fromRaw["id"] as! String,
