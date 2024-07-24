@@ -21,27 +21,7 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                               fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LCLog.logI(message: "Framework received data message: \(data)")
         do {
-            var dataDict: [String:Any] = [:]
-            for (key, value) in data {
-                if let stringKey = key as? String {
-                    if let valueDict = value as? [String: Any] {
-                        dataDict[stringKey] = valueDict
-                    } else if let valueArray = value as? [Any] {
-                        dataDict[stringKey] = valueArray
-                    } else if let valueString = value as? String {
-                        dataDict[stringKey] = valueString
-                    } else if let valueInt = value as? Int {
-                        dataDict[stringKey] = valueInt
-                    } else if let valueBool = value as? Bool {
-                        dataDict[stringKey] = valueBool
-                    } else if let valueDouble = value as? Double {
-                        dataDict[stringKey] = valueDouble
-                    } else {
-                        // Handle other types if needed
-                        LCLog.logI(message: "Unsupported value type for key: \(stringKey)")
-                    }
-                }
-            }
+            var dataDict = data as! [String:Any]
             let contentRaw = dataDict["content"] as! [String:Any]
             let fromRaw = dataDict["sender"] as! [String: Any]
             let lcMessage = LCMessage(
