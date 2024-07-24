@@ -12,6 +12,10 @@ import UIKit
 
 open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
     
+    public func configure(){
+        FirebaseApp.configure()
+    }
+    
     open func application(_ application: UIApplication,
                               didReceiveRemoteNotification data: [AnyHashable: Any],
                               fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
