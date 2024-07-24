@@ -56,7 +56,7 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
             let fromRaw = dataDict["sender"] as! String
             let fromDict = convertToDictionary(text: fromRaw)
             let lcMessage = LCMessage(
-                id: dataDict["id"] as! Int,
+                id: Int(dataDict["id"] as! String) ?? 0,
                 content: LCParseUtil.contentFrom(contentRaw: contentDict),
                 from: LCSender(
                     id: fromDict["id"] as! String,
