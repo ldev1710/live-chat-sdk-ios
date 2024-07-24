@@ -26,25 +26,18 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                 if let stringKey = key as? String {
                     if let valueDict = value as? [String: Any] {
                         dataDict[stringKey] = valueDict
-                        LCLog.logI(message: "valueDict: \(valueDict)")
                     } else if let valueArray = value as? [Any] {
                         dataDict[stringKey] = valueArray
-                        LCLog.logI(message: "valueNSString: \(valueArray)")
                     } else if let valueString = value as? String {
                         dataDict[stringKey] = valueString
-                        LCLog.logI(message: "valueString: \(valueString)")
                     } else if let valueInt = value as? Int {
                         dataDict[stringKey] = valueInt
-                        LCLog.logI(message: "valueInt: \(valueInt)")
                     } else if let valueBool = value as? Bool {
                         dataDict[stringKey] = valueBool
-                        LCLog.logI(message: "valueBool: \(valueBool)")
                     } else if let valueDouble = value as? Double {
                         dataDict[stringKey] = valueDouble
-                        LCLog.logI(message: "valueDouble: \(valueDouble)")
                     } else if let valueNSString = value as? NSString{
                         dataDict[stringKey] = valueNSString
-                        LCLog.logI(message: "valueNSString: \(valueNSString)")
                     } else {
                         // Handle other types if needed
                         LCLog.logI(message: "Unsupported value type for key: \(stringKey)")
