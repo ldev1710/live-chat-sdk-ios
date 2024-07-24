@@ -44,6 +44,7 @@ public class LiveChatSDK {
                 let json = data[0] as! [String: Any]
                 let success = json["status"] as! Bool
                 isAvailable = success
+                LCLog.logI(message: "Is available: \(isAvailable)")
                 if(!success){
                     observingAuthorize(sucess: false, message: "Un-authorized", lcAccount: nil)
                     return
@@ -216,6 +217,7 @@ public class LiveChatSDK {
             body[base64(text: "session_id")] = sessionId
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
+            LCLog.logI(message: "Start get message")
             socketClient?.emit(LCConstant.GET_MESSAGES,body)
         }
     }
@@ -234,7 +236,6 @@ public class LiveChatSDK {
     
     public static func observingInitSDK(state: LCInitialEnum, message: String){
         for listener in listeners {
-            LCLog.logI(message: "Da observe")
             listener.onInitSDKStateChange(state: state, message: message)
         }
     }
