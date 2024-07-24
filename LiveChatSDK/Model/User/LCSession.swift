@@ -11,7 +11,7 @@ public class LCSession {
     public var sessionId: String
     public var visitorJid: String
     
-    init(sessionId: String, visitorJid: String) {
+    public init(sessionId: String, visitorJid: String) {
         self.sessionId = sessionId
         self.visitorJid = visitorJid
     }

@@ -11,7 +11,7 @@ public class LCMessageSend {
     public var content: String
     public var lcSession: LCSession
     
-    init(content: String, lcSession: LCSession) {
+    public init(content: String, lcSession: LCSession) {
         self.content = content
         self.lcSession = lcSession
     }

@@ -11,7 +11,7 @@ public class LCFile {
     public var fileName: String
     public var fileExtension: String
     
-    init(fileName: String, fileExtension: String) {
+    public init(fileName: String, fileExtension: String) {
         self.fileName = fileName
         self.fileExtension = fileExtension
     }

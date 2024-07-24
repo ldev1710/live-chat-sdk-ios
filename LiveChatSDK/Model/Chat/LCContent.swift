@@ -11,7 +11,7 @@ public class LCContent {
     public var contentType: String
     public var contentMessage: Any
     
-    init(contentType: String, contentMessage: Any) {
+    public init(contentType: String, contentMessage: Any) {
         self.contentType = contentType
         self.contentMessage = contentMessage
     }

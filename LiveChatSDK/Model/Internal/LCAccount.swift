@@ -15,7 +15,7 @@ public class LCAccount {
     public var hostName: String
     public var supportType: [LCSupportType]
     
-    init(id: Int, groupId: Int, groupName: String, socketDomain: String, hostName: String, supportType: [LCSupportType]) {
+    public init(id: Int, groupId: Int, groupName: String, socketDomain: String, hostName: String, supportType: [LCSupportType]) {
         self.id = id
         self.groupId = groupId
         self.groupName = groupName

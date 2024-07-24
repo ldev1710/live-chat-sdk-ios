@@ -10,7 +10,7 @@ import Foundation
 public class LCAttachment: LCFile {
     public var url: String
     
-    init(url: String,fileName: String, fileExtension: String) {
+    public init(url: String,fileName: String, fileExtension: String) {
         self.url = url
         super.init(fileName: fileName, fileExtension: fileExtension)
     }

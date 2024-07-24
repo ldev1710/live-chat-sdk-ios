@@ -13,7 +13,7 @@ public class LCMessage {
     public var from: LCSender
     public var timeCreated: String
     
-    init(id: Int, content: LCContent, from: LCSender, timeCreated: String) {
+    public init(id: Int, content: LCContent, from: LCSender, timeCreated: String) {
         self.id = id
         self.content = content
         self.from = from

@@ -13,7 +13,7 @@ public class LCUser {
     public var phone: String
     public var deviceName: String
     
-    init(fullName: String, email: String, phone: String, deviceName: String) {
+    public init(fullName: String, email: String, phone: String, deviceName: String) {
         self.fullName = fullName
         self.email = email
         self.phone = phone
