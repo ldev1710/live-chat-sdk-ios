@@ -8,6 +8,7 @@
 import Foundation
 import UserNotifications
 import Firebase
+import UIKit
 
 public class LCMessaging: NSObject, MessagingDelegate {
     
