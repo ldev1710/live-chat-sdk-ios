@@ -17,7 +17,7 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
     }
     
     open func application(_ application: UIApplication,
-                              didReceiveRemoteNotification data: [AnyHashable: Any],
+                              didReceiveRemoteNotification data: [String: Any],
                               fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LCLog.logI(message: "Framework received data message: \(data)")
         do {
