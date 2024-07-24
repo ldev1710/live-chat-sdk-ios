@@ -118,10 +118,11 @@ public class LiveChatSDK {
                 var messages: [LCMessage] = []
                 for rawMessage in rawMessages {
                     let jsonMessage = rawMessage as! [String:Any]
+                    let fromRaw = jsonMessage["from"] as! [String:String]
                     let message = LCMessage(
                         id: jsonMessage["id"] as! Int,
                         content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
-                        from: LCSender(id: jsonMessage["id"] as! String, name: jsonMessage["name"] as! String),
+                        from: LCSender(id: fromRaw["id"] as! String, name: fromRaw["name"] as! String),
                         timeCreated: jsonMessage["created_at"] as! String
                     )
                     messages.append(message)
