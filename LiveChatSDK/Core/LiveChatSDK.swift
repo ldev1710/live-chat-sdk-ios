@@ -142,16 +142,16 @@ public class LiveChatSDK {
         }
         
         let parameters:[String:String] = [
-            "add_message_archive": "\"\"",
-            "groupid": "\"\(String(currLCAccount?.groupId ?? 0))\"",
-            "reply":"\"0\"",
+            "add_message_archive": "",
+            "groupid": String(currLCAccount?.groupId ?? 0),
+            "reply":"0",
             "type":"\"live-chat-sdk\"",
             "from": "\"\(lcSession.visitorJid)\"",
             "name": "\"\(lcUser.fullName)\"",
             "session_id": "\"\(lcSession.sessionId)\"",
             "host_name": "\"\(currLCAccount?.hostName ?? "")\"",
             "visitor_jid": "\"\(lcSession.visitorJid)\"",
-            "is_file":"\"1\"",
+            "is_file":"1",
         ]
 
         uploadFiles(url: url, files: files, parameters: parameters)
