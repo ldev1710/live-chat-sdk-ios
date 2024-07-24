@@ -218,7 +218,7 @@ public class LiveChatSDK {
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
             LCLog.logI(message: "Start get message")
-            socketClient?.emit(LCConstant.GET_MESSAGES,body)
+            socket?.emit(LCConstant.GET_MESSAGES,body)
         }
     }
     
