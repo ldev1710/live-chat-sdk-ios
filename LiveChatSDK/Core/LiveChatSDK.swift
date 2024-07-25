@@ -281,36 +281,39 @@ public class LiveChatSDK {
         request.httpBody = body
         
         let session = URLSession.shared
-        let task = session.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                LCLog.logI(message:"Error: \(String(describing: error))")
-                observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: nil, errorMessage: String(describing: error))
-                return
+        DispatchQueue.main.async{
+            let task = session.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    LCLog.logI(message:"Error: \(String(describing: error))")
+                    observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: nil, errorMessage: String(describing: error))
+                    return
+                }
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    LCLog.logI(message:"Status code: \(httpResponse.statusCode)")
+                }
+                
+                let responseString = String(data: data, encoding: .utf8)
+                let respDict = LCParseUtil.convertToDictionary(text: responseString!)
+                LCLog.logI(message:"Response: \(responseString ?? "")")
+                let dataDict = respDict["data"] as! [String: Any]
+                let fromRaw = dataDict["from"] as! [String:Any]
+                let contentRaw = dataDict["content"] as! [String:Any]
+                let lcMessage = LCMessage(
+                    id: dataDict["id"] as! Int,
+                    content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                    from: LCSender(
+                        id: fromRaw["id"] as! String,
+                        name: fromRaw["name"] as! String
+                    ),
+                    timeCreated: dataDict["created_at"] as! String
+                )
+                observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lcMessage, errorMessage: nil)
             }
             
-            if let httpResponse = response as? HTTPURLResponse {
-                LCLog.logI(message:"Status code: \(httpResponse.statusCode)")
-            }
-            
-            let responseString = String(data: data, encoding: .utf8)
-            let respDict = LCParseUtil.convertToDictionary(text: responseString!)
-            LCLog.logI(message:"Response: \(responseString ?? "")")
-            let dataDict = respDict["data"] as! [String: Any]
-            let fromRaw = dataDict["from"] as! [String:Any]
-            let contentRaw = dataDict["content"] as! [String:Any]
-            let lcMessage = LCMessage(
-                id: dataDict["id"] as! Int,
-                content: LCParseUtil.contentFrom(contentRaw: contentRaw),
-                from: LCSender(
-                    id: fromRaw["id"] as! String,
-                    name: fromRaw["name"] as! String
-                ),
-                timeCreated: dataDict["created_at"] as! String
-            )
-            observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lcMessage, errorMessage: nil)
+            task.resume()
         }
         
-        task.resume()
     }
 
     private static func createBody(with parameters: [String: String], files: [URL], boundary: String) -> Data {
