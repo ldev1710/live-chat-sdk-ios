@@ -133,12 +133,8 @@ public class LiveChatSDK {
         })
     }
     
-    public static func sendFileMessage(paths: [String], lcUser: LCUser, lcSession: LCSession){
+    public static func sendFileMessage(paths: [URL], lcUser: LCUser, lcSession: LCSession){
         let url = URL(string: "https://s01-livechat-dev.midesk.vn/upload")!
-        var files:[URL] = []
-        for path in paths {
-            files.append(URL(fileURLWithPath: path))
-        }
         
         let parameters:[String:String] = [
             "add_message_archive": "",
@@ -153,7 +149,7 @@ public class LiveChatSDK {
             "is_file":"1",
         ]
 
-        uploadFiles(url: url, files: files, parameters: parameters)
+        uploadFiles(url: url, files: paths, parameters: parameters)
 
     }
     
@@ -319,6 +315,7 @@ public class LiveChatSDK {
 
     private static func createBody(with parameters: [String: String], files: [URL], boundary: String) -> Data {
         var body = Data()
+        
         
         for (key, value) in parameters {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
