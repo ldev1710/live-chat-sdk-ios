@@ -12,7 +12,7 @@ public class LiveChatFactory {
         LiveChatSDK.initializeSDK()
     }
     
-    public static func sendFileMessage(paths: [String], lcUser: LCUser, lcSession: LCSession){
+    public static func sendFileMessage(paths: [URL], lcUser: LCUser, lcSession: LCSession){
         LiveChatSDK.sendFileMessage(paths: paths, lcUser: lcUser, lcSession: lcSession)
     }
     
