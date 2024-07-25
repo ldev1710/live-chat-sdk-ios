@@ -9,31 +9,50 @@ import Foundation
 
 open class LCListener: LCProtocol {
     
-    public init() {
-        
+    private var onReceiveMessage: (LCMessage)->()
+    private var onGotDetailConversation: ([LCMessage]) -> ()
+    private var onInitSDKStateChange: (LCInitialEnum,String)->()
+    private var onAuthstateChanged: (Bool,String,LCAccount?) -> ()
+    private var onInitialSessionStateChanged: (Bool,LCSession) -> ()
+    private var onSendMessageStateChange: (LCSendMessageEnum,LCMessage?,String?) -> ()
+    
+    public init(
+        onReceiveMessage: @escaping (LCMessage)->(),
+        onGotDetailConversation: @escaping ([LCMessage]) -> (),
+        onInitSDKStateChange: @escaping (LCInitialEnum,String)->(),
+        onAuthstateChanged:@escaping (Bool,String,LCAccount?) -> (),
+        onInitialSessionStateChanged:@escaping (Bool,LCSession) -> (),
+        onSendMessageStateChange:@escaping (LCSendMessageEnum,LCMessage?,String?) -> ()
+    ) {
+        self.onReceiveMessage = onReceiveMessage
+        self.onGotDetailConversation = onGotDetailConversation
+        self.onInitSDKStateChange = onInitSDKStateChange
+        self.onAuthstateChanged = onAuthstateChanged
+        self.onInitialSessionStateChanged = onInitialSessionStateChanged
+        self.onSendMessageStateChange = onSendMessageStateChange
     }
     
-    open func onReceiveMessage(lcMessage: LCMessage) {
-        
+    func onReceiveMessage(lcMessage: LCMessage) {
+        self.onReceiveMessage(lcMessage)
     }
     
-    open func onGotDetailConversation(messages: [LCMessage]) {
-        
+    func onGotDetailConversation(messages: [LCMessage]) {
+        self.onGotDetailConversation(messages)
     }
     
-    open func onInitSDKStateChange(state: LCInitialEnum, message: String) {
-        
+    func onInitSDKStateChange(state: LCInitialEnum, message: String) {
+        self.onInitSDKStateChange(state,message)
     }
     
-    open func onAuthstateChanged(success: Bool, message: String, lcAccount: LCAccount?) {
-        
+    func onAuthstateChanged(success: Bool, message: String, lcAccount: LCAccount?) {
+        self.onAuthstateChanged(success,message,lcAccount)
     }
     
-    open func onInitialSessionStateChanged(success: Bool, lcSession: LCSession) {
-        
+    func onInitialSessionStateChanged(success: Bool, lcSession: LCSession) {
+        self.onInitialSessionStateChanged(success,lcSession)
     }
     
-    open func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
-        
+    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
+        self.onSendMessageStateChange(state,message,errorMessage)
     }
 }
