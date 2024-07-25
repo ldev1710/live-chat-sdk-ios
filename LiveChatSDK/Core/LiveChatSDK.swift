@@ -324,6 +324,7 @@ public class LiveChatSDK {
         }
         
         for fileURL in files {
+            LCLog.logI(message: "File absoluteString posting: \(fileURL.absoluteString)")
             let filename = fileURL.lastPathComponent
             let mimetype = "application/octet-stream" // Luôn sử dụng "application/octet-stream" cho mọi loại file
             
@@ -332,6 +333,9 @@ public class LiveChatSDK {
             body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
             
             if let fileData = try? Data(contentsOf: fileURL) {
+                if(fileData.isEmpty){
+                    LCLog.logI(message: "file rong")
+                }
                 body.append(fileData)
             }
             
@@ -339,7 +343,6 @@ public class LiveChatSDK {
         }
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-        
         return body
     }
     public static func enableDebug(isEnable: Bool){
