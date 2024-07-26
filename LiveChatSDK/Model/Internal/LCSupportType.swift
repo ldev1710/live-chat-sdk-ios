@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCSupportType {
+public class LCSupportType:Identifiable {
     public var id: String
     public var name: String
     

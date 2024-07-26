@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCAttachment: LCFile {
+public class LCAttachment: LCFile,Identifiable {
     public var url: String
     
     public init(url: String,fileName: String, fileExtension: String) {

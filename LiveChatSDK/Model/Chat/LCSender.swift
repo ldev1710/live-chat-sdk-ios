@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCSender {
+public class LCSender:Identifiable {
     public var id: String
     public var name: String
     

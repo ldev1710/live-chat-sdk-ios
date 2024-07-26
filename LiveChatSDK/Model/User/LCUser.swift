@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCUser {
+public class LCUser:Identifiable {
     public var fullName: String
     public var email: String
     public var phone: String

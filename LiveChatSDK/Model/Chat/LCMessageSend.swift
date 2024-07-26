@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCMessageSend {
+public class LCMessageSend:Identifiable {
     public var content: String
     public var lcSession: LCSession
     

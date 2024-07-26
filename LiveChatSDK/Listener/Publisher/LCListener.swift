@@ -8,6 +8,7 @@
 import Foundation
 
 open class LCListener: LCProtocol {
+    public let id = UUID().uuidString
     
     private var onReceiveMessage: (LCMessage)->()
     private var onGotDetailConversation: ([LCMessage]) -> ()

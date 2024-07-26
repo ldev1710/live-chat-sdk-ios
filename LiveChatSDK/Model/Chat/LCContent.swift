@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCContent {
+public class LCContent:Identifiable {
     public var contentType: String
     public var contentMessage: Any
     

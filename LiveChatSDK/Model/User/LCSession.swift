@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCSession {
+public class LCSession:Identifiable {
     public var sessionId: String
     public var visitorJid: String
     

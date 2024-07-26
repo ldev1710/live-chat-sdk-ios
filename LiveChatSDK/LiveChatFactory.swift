@@ -28,6 +28,10 @@ public class LiveChatFactory {
         LiveChatSDK.addEventListener(listener: listener)
     }
     
+    public static func removeEventListener(listener: LCListener){
+        LiveChatSDK.removeEventListener(listener:listener)
+    }
+    
     public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
         LiveChatSDK.sendMessage(lcUser: lcUser, message: message)
     }

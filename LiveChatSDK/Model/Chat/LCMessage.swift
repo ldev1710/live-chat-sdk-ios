@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCMessage {
+public class LCMessage:Identifiable {
     public var id: Int
     public var content: LCContent
     public var from: LCSender

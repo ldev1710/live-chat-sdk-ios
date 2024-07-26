@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCAccount {
+public class LCAccount:Identifiable {
     public var id: Int
     public var groupId: Int
     public var groupName: String

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LCFile {
+public class LCFile :Identifiable {
     public var fileName: String
     public var fileExtension: String
     

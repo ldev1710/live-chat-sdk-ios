@@ -128,7 +128,6 @@ public class LiveChatSDK {
                 }
                 observingGotMessages(messages: messages)
             }
-            
             socket!.connect()
         })
     }
@@ -184,6 +183,15 @@ public class LiveChatSDK {
     
     public static func addEventListener(listener: LCListener){
         listeners.append(listener)
+    }
+    
+    public static func removeEventListener(listener: LCListener){
+        let index = listeners.firstIndex(where: {listener.id == $0.id}) ?? -1
+        if(index == -1){
+            LCLog.logI(message: "Can not find listener id: \(listener.id)")
+            return
+        }
+        listeners.remove(at: index)
     }
     
     public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
@@ -284,21 +292,21 @@ public class LiveChatSDK {
         DispatchQueue.main.async{
             let task = session.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
-                    LCLog.logI(message:"Error: \(String(describing: error))")
+                    LCLog.logI(message: "Error: \(String(describing: error))")
                     observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: nil, errorMessage: String(describing: error))
                     return
                 }
                 
                 if let httpResponse = response as? HTTPURLResponse {
-                    LCLog.logI(message:"Status code: \(httpResponse.statusCode)")
+                    LCLog.logI(message: "Status code: \(httpResponse.statusCode)")
                 }
                 
                 let responseString = String(data: data, encoding: .utf8)
                 let respDict = LCParseUtil.convertToDictionary(text: responseString!)
-                LCLog.logI(message:"Response: \(responseString ?? "")")
+                LCLog.logI(message: "Response: \(responseString ?? "")")
                 let dataDict = respDict["data"] as! [String: Any]
-                let fromRaw = dataDict["from"] as! [String:Any]
-                let contentRaw = dataDict["content"] as! [String:Any]
+                let fromRaw = dataDict["from"] as! [String: Any]
+                let contentRaw = dataDict["content"] as! [String: Any]
                 let lcMessage = LCMessage(
                     id: dataDict["id"] as! Int,
                     content: LCParseUtil.contentFrom(contentRaw: contentRaw),
@@ -313,12 +321,10 @@ public class LiveChatSDK {
             
             task.resume()
         }
-        
     }
 
     private static func createBody(with parameters: [String: String], files: [URL], boundary: String) -> Data {
         var body = Data()
-        
         
         for (key, value) in parameters {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -332,14 +338,18 @@ public class LiveChatSDK {
             let mimetype = "application/octet-stream" // Luôn sử dụng "application/octet-stream" cho mọi loại file
             
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"body\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
             body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
             
             if let fileData = try? Data(contentsOf: fileURL) {
-                if(fileData.isEmpty){
+                if fileData.isEmpty {
                     LCLog.logI(message: "file rong")
+                } else {
+                    LCLog.logI(message: "File data length: \(fileData.count)")
                 }
                 body.append(fileData)
+            } else {
+                LCLog.logI(message: "Failed to read file data")
             }
             
             body.append("\r\n".data(using: .utf8)!)
@@ -348,6 +358,7 @@ public class LiveChatSDK {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         return body
     }
+    
     public static func enableDebug(isEnable: Bool){
         isDebuging = isEnable
     }
