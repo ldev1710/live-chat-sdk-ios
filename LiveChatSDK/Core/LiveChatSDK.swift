@@ -338,15 +338,10 @@ public class LiveChatSDK {
             let mimetype = "application/octet-stream" // Luôn sử dụng "application/octet-stream" cho mọi loại file
             
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"body\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
             body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
             
             if let fileData = try? Data(contentsOf: fileURL) {
-                if fileData.isEmpty {
-                    LCLog.logI(message: "file rong")
-                } else {
-                    LCLog.logI(message: "File data length: \(fileData.count)")
-                }
                 body.append(fileData)
             } else {
                 LCLog.logI(message: "Failed to read file data")
