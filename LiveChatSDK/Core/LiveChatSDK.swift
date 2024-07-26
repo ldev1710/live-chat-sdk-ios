@@ -133,6 +133,10 @@ public class LiveChatSDK {
     }
     
     public static func sendFileMessage(paths: [URL], lcUser: LCUser, lcSession: LCSession){
+        if(paths.count > 3){
+            LCLog.logI(message: "You are only allowed to send a maximum of 3 files")
+            return
+        }
         let url = URL(string: "https://s01-livechat-dev.midesk.vn/upload")!
         
         let parameters:[String:String] = [
