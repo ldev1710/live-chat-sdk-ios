@@ -240,6 +240,14 @@ public class LiveChatSDK {
         }
     }
     
+    public static func getLCSession() -> LCSession {
+        return lcSession!
+    }
+    
+    public static func getLCUser() -> LCUser{
+        return lcUser!
+    }
+    
     public static func observingMessage(lcMesasge:LCMessage){
         for listener in listeners {
             listener.onReceiveMessage(lcMessage: lcMesasge)

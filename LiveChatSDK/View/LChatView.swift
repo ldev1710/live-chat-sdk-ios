@@ -19,8 +19,6 @@ extension LCMessage : Equatable {
 struct LChatView: View {
     
     @State private var isFetching = true
-    @State public var lcSession: LCSession?
-    @State public var lcUser: LCUser?
     @State private var listener: LCListener?
     @State private var messages: [LCMessage]?
     @StateObject private var viewModel = LChatViewModel()
@@ -98,16 +96,6 @@ struct LChatView: View {
                 PHPhotoLibrary.requestAuthorization({status in
                 })
             }
-
-            let currSessionId = UserDefaults.standard.string(forKey: "currSessionId")
-            let currVisitorJid = UserDefaults.standard.string(forKey: "currVisitorJid")
-            lcSession = LCSession(sessionId: currSessionId!, visitorJid: currVisitorJid!)
-            let standard = UserDefaults.standard
-            let fullName = standard.string(forKey: "fullName")
-            let email = standard.string(forKey: "email")
-            let phone = standard.string(forKey: "phone")
-            let deviceName = standard.string(forKey: "deviceName")
-            lcUser = LCUser(fullName: fullName!, email: email!, phone: phone!, deviceName: deviceName!)
             listener = LCListener(
                 onReceiveMessage: self.onReceiveMessage,
                 onGotDetailConversation: self.onGotDetailConversation,
@@ -117,7 +105,7 @@ struct LChatView: View {
                 onSendMessageStateChange: self.onSendMessageStateChange
             )
             LiveChatFactory.addEventListener(listener: listener!)
-            LiveChatFactory.getMessages(sessionId: lcSession!.sessionId)
+            LiveChatFactory.getMessages()
         })
     }
     

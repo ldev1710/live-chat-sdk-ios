@@ -12,7 +12,7 @@ struct LCMessageView: View {
     let message: LCMessage
     
     var body: some View {
-        VStack(alignment: message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .trailing : .leading) {
+        VStack(alignment: message.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading) {
             Text(message.from.name)
                 .font(.caption)
                 .foregroundColor(.gray)
@@ -20,8 +20,8 @@ struct LCMessageView: View {
                 Text(message.content.contentMessage as? String ?? "")
                     .frame(alignment: .leading)
                     .padding()
-                    .foregroundColor(Color(message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .white : .black))
-                    .background(Color(message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .systemBlue : .systemGray5))
+                    .foregroundColor(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
+                    .background(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
                     .cornerRadius(10)
             } else if message.content.contentType == "file" {
                 if let contents = message.content.contentMessage as? [LCAttachment]{
@@ -32,8 +32,8 @@ struct LCMessageView: View {
                         }
                         .frame(maxWidth: 200,alignment: .leading)
                         .padding()
-                        .foregroundColor(Color(message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .white : .black))
-                        .background(Color(message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .systemBlue : .systemGray5))
+                        .foregroundColor(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
+                        .background(Color(message.from.id == LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
                         .cornerRadius(10)
                     }
                 }
