@@ -55,6 +55,7 @@ public class LiveChatFactory {
     }
     
     public static func viewEngine() -> some View {
+        LCLog.logI(message: "View engine called")
         return LiveChatSDK.viewEngine()
     }
 }
