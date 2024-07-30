@@ -13,6 +13,7 @@ struct URLImage: View {
     let placeholder: UIImage
 
     init(url: URL, placeholder: UIImage = UIImage(systemName: "photo")!) {
+        LCLog.logI(message: "URL loading image: \(url)")
         _loader = StateObject(wrappedValue: LCImageLoader())
         self.placeholder = placeholder
         loader.load(from: url)

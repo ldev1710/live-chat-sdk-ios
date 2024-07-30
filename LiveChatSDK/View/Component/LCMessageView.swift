@@ -42,8 +42,7 @@ struct LCMessageView: View {
                     ForEach(contents) { content in
                         URLImage(url: URL(string: content.url)!)
                             .frame(width: 200, height: 300)
-                            .clipShape(Circle())
-                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                            .cornerRadius(8)
                             .shadow(radius: 10)
                     }
                 }
