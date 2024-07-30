@@ -9,20 +9,24 @@ import Foundation
 import SwiftUI
 
 struct URLImage: View {
-    @StateObject private var loader: LCImageLoader
+    @StateObject private var loader = LCImageLoader()
     let placeholder: UIImage
-
+    let imageUrl: URL
+    
     init(url: URL, placeholder: UIImage = UIImage(systemName: "photo")!) {
-        LCLog.logI(message: "URL loading image: \(url)")
-        _loader = StateObject(wrappedValue: LCImageLoader())
+        self.imageUrl = url
         self.placeholder = placeholder
-        loader.load(from: url)
     }
 
     var body: some View {
         image
             .resizable()
-            .aspectRatio(contentMode: .fit)
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 200, height: 300)
+            .clipShape(RoundedRectangle(cornerRadius: 10)) // Bo nhẹ 4 góc
+            .onAppear {
+                loader.load(from: imageUrl)
+            }
     }
 
     private var image: Image {
