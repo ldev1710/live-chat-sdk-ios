@@ -14,6 +14,7 @@ struct LCBlankView: View {
             Text("Please set user session, through LiveChatFactory.setUserSession function!")
                 .font(.caption)
                 .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
                 .padding()
         }
     }
