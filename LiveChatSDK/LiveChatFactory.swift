@@ -54,7 +54,7 @@ public class LiveChatFactory {
         LiveChatSDK.openChatView(viewController: viewController)
     }
     
-    public static func viewEngine() -> some View {
-        return LiveChatSDK.viewEngine()
+    public static func viewEngine() throws -> some View {
+        return try LiveChatSDK.viewEngine()
     }
 }
