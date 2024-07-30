@@ -57,6 +57,13 @@
 		C18AC9F12C37EC3500576E9D /* LiveChatFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */; };
 		C18AC9F42C37EC6E00576E9D /* LiveChatSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */; };
 		C1ABB3DD2C40E7A4009CAF27 /* LCMessaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1ABB3DC2C40E7A4009CAF27 /* LCMessaging.swift */; };
+		C1BF92862C588BC9009FBCED /* LChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92852C588BC9009FBCED /* LChatView.swift */; };
+		C1BF92882C588C3C009FBCED /* LCPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92872C588C3C009FBCED /* LCPicker.swift */; };
+		C1BF928A2C588D14009FBCED /* LChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92892C588D14009FBCED /* LChatViewController.swift */; };
+		C1BF928C2C588D31009FBCED /* LCViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF928B2C588D31009FBCED /* LCViewModel.swift */; };
+		C1BF928E2C588DC4009FBCED /* LCMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF928D2C588DC4009FBCED /* LCMessageView.swift */; };
+		C1BF92902C588FFE009FBCED /* LCImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */; };
+		C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92912C58901B009FBCED /* LCURLImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -96,6 +103,13 @@
 		C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChatFactory.swift; sourceTree = "<group>"; };
 		C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChatSDK.swift; sourceTree = "<group>"; };
 		C1ABB3DC2C40E7A4009CAF27 /* LCMessaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessaging.swift; sourceTree = "<group>"; };
+		C1BF92852C588BC9009FBCED /* LChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LChatView.swift; sourceTree = "<group>"; };
+		C1BF92872C588C3C009FBCED /* LCPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCPicker.swift; sourceTree = "<group>"; };
+		C1BF92892C588D14009FBCED /* LChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LChatViewController.swift; sourceTree = "<group>"; };
+		C1BF928B2C588D31009FBCED /* LCViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCViewModel.swift; sourceTree = "<group>"; };
+		C1BF928D2C588DC4009FBCED /* LCMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessageView.swift; sourceTree = "<group>"; };
+		C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCImageLoader.swift; sourceTree = "<group>"; };
+		C1BF92912C58901B009FBCED /* LCURLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCURLImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +257,7 @@
 		C18AC9E82C37EC1900576E9D /* LiveChatSDK */ = {
 			isa = PBXGroup;
 			children = (
+				C1BF92842C5887C5009FBCED /* View */,
 				C137128F2C4DF96600D0D9FE /* Util */,
 				C137128E2C4DF95D00D0D9FE /* Listener */,
 				C137128D2C4DF94900D0D9FE /* Model */,
@@ -268,6 +283,36 @@
 				C1ABB3DC2C40E7A4009CAF27 /* LCMessaging.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		C1BF92842C5887C5009FBCED /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C1BF92942C5891DE009FBCED /* Document */,
+				C1BF92932C589086009FBCED /* Component */,
+				C1BF92852C588BC9009FBCED /* LChatView.swift */,
+				C1BF92892C588D14009FBCED /* LChatViewController.swift */,
+				C1BF928B2C588D31009FBCED /* LCViewModel.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C1BF92932C589086009FBCED /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				C1BF928D2C588DC4009FBCED /* LCMessageView.swift */,
+				C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */,
+				C1BF92912C58901B009FBCED /* LCURLImage.swift */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		C1BF92942C5891DE009FBCED /* Document */ = {
+			isa = PBXGroup;
+			children = (
+				C1BF92872C588C3C009FBCED /* LCPicker.swift */,
+			);
+			path = Document;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -395,15 +440,22 @@
 				C137129E2C4DFAE400D0D9FE /* LCMessage.swift in Sources */,
 				C18AC9F12C37EC3500576E9D /* LiveChatFactory.swift in Sources */,
 				C18AC9F42C37EC6E00576E9D /* LiveChatSDK.swift in Sources */,
+				C1BF92902C588FFE009FBCED /* LCImageLoader.swift in Sources */,
 				C137129C2C4DFABB00D0D9FE /* LCMessageSend.swift in Sources */,
 				C13712A02C4DFB2C00D0D9FE /* LCContent.swift in Sources */,
 				C13712962C4DF9E500D0D9FE /* LCUser.swift in Sources */,
+				C1BF92882C588C3C009FBCED /* LCPicker.swift in Sources */,
 				C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */,
 				C13712AF2C4DFEBD00D0D9FE /* LCSupportType.swift in Sources */,
+				C1BF928C2C588D31009FBCED /* LCViewModel.swift in Sources */,
+				C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */,
+				C1BF928E2C588DC4009FBCED /* LCMessageView.swift in Sources */,
 				C13712A42C4DFB8700D0D9FE /* LCFile.swift in Sources */,
+				C1BF928A2C588D14009FBCED /* LChatViewController.swift in Sources */,
 				C137129A2C4DFA9400D0D9FE /* LCSender.swift in Sources */,
 				C14654D82C4FB7AB00A66B9B /* LCParseUtil.swift in Sources */,
 				C13712B12C4E00EF00D0D9FE /* LCListener.swift in Sources */,
+				C1BF92862C588BC9009FBCED /* LChatView.swift in Sources */,
 				C13712A82C4DFCEB00D0D9FE /* LCProtocol.swift in Sources */,
 				C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */,
 			);
@@ -552,7 +604,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -590,7 +642,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

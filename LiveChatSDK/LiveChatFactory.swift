@@ -6,14 +6,16 @@
 //
 
 import Foundation
+import SwiftUI
+import UIKit
 
 public class LiveChatFactory {
     public static func initializeSDK() {
         LiveChatSDK.initializeSDK()
     }
     
-    public static func sendFileMessage(paths: [URL], lcUser: LCUser, lcSession: LCSession){
-        LiveChatSDK.sendFileMessage(paths: paths, lcUser: lcUser, lcSession: lcSession)
+    public static func sendFileMessage(paths: [URL]){
+        LiveChatSDK.sendFileMessage(paths: paths)
     }
     
     public static func initializeSession(user: LCUser, supportType: LCSupportType){
@@ -32,15 +34,28 @@ public class LiveChatFactory {
         LiveChatSDK.removeEventListener(listener:listener)
     }
     
-    public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
-        LiveChatSDK.sendMessage(lcUser: lcUser, message: message)
+    public static func sendMessage(message: LCMessageSend){
+        LiveChatSDK.sendMessage(message: message)
     }
     
-    public static func getMessages(sessionId: String, offset: Int = 0, limit: Int = 5){
-        LiveChatSDK.getMessages(sessionId: sessionId,offset: offset,limit: limit)
+    public static func getMessages(offset: Int = 0, limit: Int = 5){
+        LiveChatSDK.getMessages(offset: offset,limit: limit)
     }
     
     public static func enableDebug(isEnable: Bool){
         LiveChatSDK.enableDebug(isEnable: isEnable)
+    }
+    
+    public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
+        LiveChatSDK.setUserSession(lcSession: lcSession, lcUser: lcUser)
+    }
+    
+    public static func openChatView(viewController: UIViewController) {
+        let chatViewController = LChatViewController()
+        viewController.present(chatViewController, animated: true, completion: nil)
+    }
+    
+    public static func viewEngine() -> some View {
+        return LChatView()
     }
 }

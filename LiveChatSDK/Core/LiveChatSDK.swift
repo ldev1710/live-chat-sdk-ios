@@ -21,6 +21,8 @@ public class LiveChatSDK {
     private static var socketManagerClient: SocketManager?
     private static var socketClient: SocketIOClient?
     private static var currLCAccount: LCAccount?
+    private static var lcSession: LCSession?
+    private static var lcUser: LCUser?
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -132,7 +134,15 @@ public class LiveChatSDK {
         })
     }
     
-    public static func sendFileMessage(paths: [URL], lcUser: LCUser, lcSession: LCSession){
+    public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
+        self.lcUser = lcUser
+        self.lcSession = lcSession
+    }
+    
+    public static func sendFileMessage(paths: [URL]){
+        if(!isValid()) {
+            return
+        }
         if(paths.count > 3){
             LCLog.logI(message: "You are only allowed to send a maximum of 3 files")
             return
@@ -144,11 +154,11 @@ public class LiveChatSDK {
             "groupid": String(currLCAccount?.groupId ?? 0),
             "reply":"0",
             "type":"\"live-chat-sdk\"",
-            "from": "\"\(lcSession.visitorJid)\"",
-            "name": "\"\(lcUser.fullName)\"",
-            "session_id": "\"\(lcSession.sessionId)\"",
+            "from": "\"\(lcSession!.visitorJid)\"",
+            "name": "\"\(lcUser!.fullName)\"",
+            "session_id": "\"\(lcSession!.sessionId)\"",
             "host_name": "\"\(currLCAccount?.hostName ?? "")\"",
-            "visitor_jid": "\"\(lcSession.visitorJid)\"",
+            "visitor_jid": "\"\(lcSession!.visitorJid)\"",
             "is_file":"1",
         ]
 
@@ -157,7 +167,7 @@ public class LiveChatSDK {
     }
     
     public static func initializeSession(user: LCUser, supportType: LCSupportType){
-        if(isValid()){
+        if(isInitialized && isAvailable){
             Messaging.messaging().token { token, error in
               if let error = error {
                   LCLog.logI(message: "Error fetching FCM registration token: \(error)")
@@ -198,7 +208,7 @@ public class LiveChatSDK {
         listeners.remove(at: index)
     }
     
-    public static func sendMessage(lcUser: LCUser, message: LCMessageSend){
+    public static func sendMessage(message: LCMessageSend){
         if(isValid()){
             observingSendMessage(state: LCSendMessageEnum.SENDING, message: nil, errorMessage: nil)
             var body:[String:Any] = [:]
@@ -208,21 +218,21 @@ public class LiveChatSDK {
             body[base64(text: "add_message_archive")] = ""
             body[base64(text: "reply")] = 0
             body[base64(text: "type")] = "live-chat-sdk"
-            body[base64(text: "from")] = message.lcSession.visitorJid
-            body[base64(text: "name")] = lcUser.fullName
-            body[base64(text: "session_id")] = message.lcSession.sessionId
-            body[base64(text: "visitor_jid")] = message.lcSession.visitorJid
+            body[base64(text: "from")] = lcSession!.visitorJid
+            body[base64(text: "name")] = lcUser!.fullName
+            body[base64(text: "session_id")] = lcSession!.sessionId
+            body[base64(text: "visitor_jid")] = lcSession!.visitorJid
             body[base64(text: "is_file")] = 0
             socketClient?.emit(LCConstant.SEND_MESSAGE,body)
         }
     }
     
-    public static func getMessages(sessionId: String, offset: Int = 0, limit: Int = 5){
+    public static func getMessages(offset: Int = 0, limit: Int = 5){
         if(isValid()){
             var body:[String:Any] = [:]
             body[base64(text: "groupid")] = currLCAccount?.groupId
             body[base64(text: "host_name")] = currLCAccount?.hostName
-            body[base64(text: "session_id")] = sessionId
+            body[base64(text: "session_id")] = lcSession!.sessionId
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
             LCLog.logI(message: "Start get message")
@@ -269,6 +279,10 @@ public class LiveChatSDK {
     private static func isValid() -> Bool{
         if(!(isInitialized && isAvailable)){
             LCLog.logI(message: "LiveChat SDK is not ready!")
+            return false
+        }
+        if(lcUser == nil || lcSession == nil) {
+            LCLog.logI(message: "User session not has been set yet. Please call LiveChatFactory.setUserSession !")
             return false
         }
         return true

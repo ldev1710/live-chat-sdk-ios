@@ -9,10 +9,8 @@ import Foundation
 
 public class LCMessageSend:Identifiable {
     public var content: String
-    public var lcSession: LCSession
     
-    public init(content: String, lcSession: LCSession) {
+    public init(content: String) {
         self.content = content
-        self.lcSession = lcSession
     }
 }
