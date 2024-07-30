@@ -1,9 +1,12 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.3
 
 import PackageDescription
 
 let package = Package(
     name: "LiveChatSDK",
+    platforms: [
+        .iOS(.v14), // Đặt phiên bản iOS tối thiểu ở đây
+    ],
     products: [
         .library(name: "LiveChatSDK", targets: ["LiveChatSDK"]),
     ],
@@ -15,8 +18,8 @@ let package = Package(
         .target(
             name: "LiveChatSDK",
             dependencies: [
-                "SocketIO",
                 .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                .product(name: "SocketIO", package: "socket.io-client-swift")
             ],
             path: "./LiveChatSDK"
         ),
