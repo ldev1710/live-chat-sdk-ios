@@ -9,6 +9,12 @@ import Foundation
 import UserNotifications
 import SocketIO
 import Firebase
+import SwiftUI
+import UIKit
+
+enum ChatViewError: Error {
+    case invalidCondition(String)
+}
 
 public class LiveChatSDK {
     
@@ -132,6 +138,21 @@ public class LiveChatSDK {
             }
             socket!.connect()
         })
+    }
+    
+    public static func viewEngine() throws -> some View {
+        guard isValid() else {
+            throw ChatViewError.invalidCondition("Have error occur!")
+        }
+        return LChatView()
+    }
+    
+    public static func openChatView(viewController: UIViewController) {
+        if(!isValid()){
+            return
+        }
+        let chatViewController = LChatViewController()
+        viewController.present(chatViewController, animated: true, completion: nil)
     }
     
     public static func setUserSession(lcSession: LCSession, lcUser:LCUser){

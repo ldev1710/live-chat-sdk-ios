@@ -51,11 +51,10 @@ public class LiveChatFactory {
     }
     
     public static func openChatView(viewController: UIViewController) {
-        let chatViewController = LChatViewController()
-        viewController.present(chatViewController, animated: true, completion: nil)
+        LiveChatSDK.openChatView(viewController: viewController)
     }
     
     public static func viewEngine() -> some View {
-        return LChatView()
+        return LiveChatSDK.viewEngine()
     }
 }
