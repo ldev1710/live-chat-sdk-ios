@@ -140,11 +140,12 @@ public class LiveChatSDK {
         })
     }
     
-    public static func viewEngine() throws -> some View {
-        guard isValid() else {
-            throw ChatViewError.invalidCondition("Have error occur!")
+    public static func viewEngine() -> some View {
+        if(!isValid()){
+            return AnyView(LCBlankView())
+        } else {
+            return AnyView(LChatView())
         }
-        return LChatView()
     }
     
     public static func openChatView(viewController: UIViewController) {
