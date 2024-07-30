@@ -114,9 +114,6 @@ struct LChatView: View {
     }
     
     func onGotDetailConversation(messages: [LCMessage]) {
-        for message in messages {
-            print(message.content.contentType)
-        }
         viewModel.messages = messages.reversed()
         isFetching = false
     }
@@ -147,7 +144,7 @@ struct LChatView: View {
                     try data.write(to: filename)
                     urls.append(filename)
                 } catch {
-                    print("Lỗi khi lưu ảnh: \(error)")
+                    LCLog.logI(message: "Error when copying image: \(error)")
                 }
             }
         }

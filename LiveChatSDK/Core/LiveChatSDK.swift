@@ -141,7 +141,6 @@ public class LiveChatSDK {
     }
     
     public static func viewEngine() -> some View {
-        LCLog.logI(message: "is valid: \(isValid())")
         if(!isValid()){
             return AnyView(LCBlankView())
         } else {
