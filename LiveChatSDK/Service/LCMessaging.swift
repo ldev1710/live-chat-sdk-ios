@@ -44,20 +44,28 @@ open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {
                     }
                 }
             }
-            let contentRaw = dataDict["content"] as! String
-            let contentDict = LCParseUtil.convertToDictionary(text: contentRaw)
-            let fromRaw = dataDict["sender"] as! String
-            let fromDict = LCParseUtil.convertToDictionary(text: fromRaw)
-            let lcMessage = LCMessage(
-                id: Int(dataDict["id"] as! String) ?? 0,
-                content: LCParseUtil.contentFrom(contentRaw: contentDict),
-                from: LCSender(
-                    id: fromDict["id"] as! String,
-                    name: fromDict["name"] as! String
-                ),
-                timeCreated: data["created_at"] as! String
-            )
-            LiveChatSDK.observingMessage(lcMesasge: lcMessage)
+            let software = dataDict["software"] as? String
+            if(software != nil && software == "live-chat-sdk"){
+                let fromRaw = dataDict["sender"] as! String
+                let fromDict = LCParseUtil.convertToDictionary(text: fromRaw)
+                if(fromDict["id"] as! String == LiveChatSDK.getLCSession().visitorJid){
+                    return
+                }
+                let contentRaw = dataDict["content"] as! String
+                let contentDict = LCParseUtil.convertToDictionary(text: contentRaw)
+                
+                
+                let lcMessage = LCMessage(
+                    id: Int(dataDict["id"] as! String) ?? 0,
+                    content: LCParseUtil.contentFrom(contentRaw: contentDict),
+                    from: LCSender(
+                        id: fromDict["id"] as! String,
+                        name: fromDict["name"] as! String
+                    ),
+                    timeCreated: data["created_at"] as! String
+                )
+                LiveChatSDK.observingMessage(lcMesasge: lcMessage)
+            }
         } catch{
             LCLog.logI(message: "Error parse data \(error)")
         }
