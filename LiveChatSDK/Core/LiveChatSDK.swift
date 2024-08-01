@@ -29,6 +29,7 @@ public class LiveChatSDK {
     private static var currLCAccount: LCAccount?
     private static var lcSession: LCSession?
     private static var lcUser: LCUser?
+    private static var accessToken: String!
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -60,6 +61,7 @@ public class LiveChatSDK {
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
+                accessToken = jsonData["access_token"] as? String
                 LCLog.logI(message: "\(LCConstant.CLIENT_URL_SOCKET)")
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
                 var supportTypes: [LCSupportType] = []
@@ -197,6 +199,7 @@ public class LiveChatSDK {
                   LCLog.logI(message: token)
                   var body:[String:Any] = [:]
                   body[base64(text: "groupid")] = currLCAccount?.groupId
+                  body[base64(text: "access_token")] = accessToken
                   body[base64(text: "host_name")] = currLCAccount?.hostName
                   body[base64(text: "visitor_name")] = user.fullName
                   body[base64(text: "visitor_email")] = user.email
@@ -239,6 +242,7 @@ public class LiveChatSDK {
             body[base64(text: "body")] = message.content
             body[base64(text: "add_message_archive")] = ""
             body[base64(text: "reply")] = 0
+            body[base64(text: "access_token")] = accessToken
             body[base64(text: "type")] = "live-chat-sdk"
             body[base64(text: "from")] = lcSession!.visitorJid
             body[base64(text: "name")] = lcUser!.fullName
@@ -254,6 +258,7 @@ public class LiveChatSDK {
             var body:[String:Any] = [:]
             body[base64(text: "groupid")] = currLCAccount?.groupId
             body[base64(text: "host_name")] = currLCAccount?.hostName
+            body[base64(text: "access_token")] = accessToken
             body[base64(text: "session_id")] = lcSession!.sessionId
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
@@ -329,6 +334,7 @@ public class LiveChatSDK {
     private static func uploadFiles(url: URL, files: [URL], parameters: [String: String]) {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.addValue("Bearer "+accessToken, forHTTPHeaderField: "Authorization")
         
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")

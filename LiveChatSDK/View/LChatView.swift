@@ -32,7 +32,7 @@ struct LChatView: View {
             ScrollView {
                 ScrollViewReader { value in
                     ForEach(viewModel.messages) { message in
-                        LCMessageView(message: message)
+                        LCMessageView(message: message,onRemoveMessage: self.onRemoveMessage)
                             .padding(.vertical, 4)
                     }.onChange(of: viewModel.messages) { _ in
                         value.scrollTo(viewModel.messages.count - 1)
@@ -41,54 +41,56 @@ struct LChatView: View {
             }
             .padding(.horizontal)
             
-            HStack {
-                TextField("Type a message", text: $viewModel.newMessageText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button(action: {
-                    showFilePicker.toggle()
-                }) {
-                    Image(systemName: "paperclip")
-                        .foregroundColor(.blue)
-                        .padding()
-                }
-                .sheet(isPresented: $showFilePicker) {
-                    LCDocumentPicker(
-                        didPickDocuments: { urls in
-                            selectedFile = urls
-                            viewModel.sendFile(fileURL: selectedFile)
-                        }
-                    )
-                }
-                
-                Button(action: {
-                    showImagePicker.toggle()
-                }) {
-                    Image(systemName: "photo")
-                        .foregroundColor(.blue)
-                        .padding()
-                }
-                .sheet(isPresented: $showImagePicker) {
-                    LCPhotoPicker(){
-                        images in
-                        saveImagesToURLs(images: images){
-                            urls in
-                            viewModel.sendFile(fileURL: urls)
+            GeometryReader {
+                geometry in
+                HStack {
+                    TextField("Type a message", text: $viewModel.newMessageText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: geometry.size.width * 0.65)
+                        
+                    Button(action: {
+                        showFilePicker.toggle()
+                    }) {
+                        Image(systemName: "paperclip")
+                            .foregroundColor(.blue)
+                    }
+                    .frame(width: geometry.size.width * 0.1)
+                    .sheet(isPresented: $showFilePicker) {
+                        LCDocumentPicker(
+                            didPickDocuments: { urls in
+                                selectedFile = urls
+                                viewModel.sendFile(fileURL: selectedFile)
+                            }
+                        )
+                    }
+                    
+                    Button(action: {
+                        showImagePicker.toggle()
+                    }) {
+                        Image(systemName: "photo")
+                            .foregroundColor(.blue)
+                    }
+                    .frame(width: geometry.size.width * 0.1)
+                    .sheet(isPresented: $showImagePicker) {
+                        LCPhotoPicker(){
+                            images in
+                            saveImagesToURLs(images: images){
+                                urls in
+                                viewModel.sendFile(fileURL: urls)
+                            }
                         }
                     }
-                }
-                
-                Button(action: {
-                    viewModel.sendMessage()
-                }) {
-                    Text("Send")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(5)
+                    
+                    Button(action: {
+                        viewModel.sendMessage()
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                    }
+                    .frame(width: geometry.size.width * 0.1)
                 }
             }
-            .padding()
+            .frame(height: 70, alignment: .bottom)
+            .padding([.leading,.trailing],8)
         }
         .onAppear(perform: {
             let photos = PHPhotoLibrary.authorizationStatus()
@@ -107,6 +109,10 @@ struct LChatView: View {
             LiveChatFactory.addEventListener(listener: listener!)
             LiveChatFactory.getMessages()
         })
+    }
+    
+    func onRemoveMessage(lcMessage: LCMessage) {
+        viewModel.messages.remove(at: viewModel.messages.firstIndex(of: lcMessage)!)
     }
     
     func onReceiveMessage(lcMessage: LCMessage) {
@@ -156,4 +162,8 @@ struct LChatView: View {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
+}
+
+#Preview{
+    LChatView()
 }

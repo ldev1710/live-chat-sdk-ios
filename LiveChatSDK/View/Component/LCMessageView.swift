@@ -10,6 +10,7 @@ import SwiftUI
 
 struct LCMessageView: View {
     let message: LCMessage
+    public var onRemoveMessage: (LCMessage)->()
     
     var body: some View {
         VStack(alignment: message.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading) {
@@ -23,6 +24,19 @@ struct LCMessageView: View {
                     .foregroundColor(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
                     .background(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
                     .cornerRadius(10)
+                    .contextMenu {
+                        Button(action: {
+                            UIPasteboard.general.string = message.content.contentMessage as? String
+                        }) {
+                            Label("Sao chép", systemImage: "doc.on.doc")
+                        }
+                        
+                        Button(action: {
+                            onRemoveMessage(message)
+                        }) {
+                            Label("Xoá tin nhắn", systemImage: "trash")
+                        }
+                    }
             } else if message.content.contentType == "file" {
                 if let contents = message.content.contentMessage as? [LCAttachment]{
                     ForEach(contents) { content in
@@ -35,6 +49,19 @@ struct LCMessageView: View {
                         .foregroundColor(Color(message.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
                         .background(Color(message.from.id == LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
                         .cornerRadius(10)
+                        .contextMenu {
+                            Button(action: {
+                                UIPasteboard.general.string = content.url
+                            }) {
+                                Label("Sao chép", systemImage: "doc.on.doc")
+                            }
+                            
+                            Button(action: {
+                                onRemoveMessage(message)
+                            }) {
+                                Label("Xoá tin nhắn", systemImage: "trash")
+                            }
+                        }
                     }
                 }
             } else if message.content.contentType == "image" {
@@ -44,6 +71,19 @@ struct LCMessageView: View {
                             .frame(width: 200, height: 300)
                             .cornerRadius(8)
                             .shadow(radius: 10)
+                            .contextMenu {
+                                Button(action: {
+                                    UIPasteboard.general.string = content.url
+                                }) {
+                                    Label("Sao chép", systemImage: "doc.on.doc")
+                                }
+                                
+                                Button(action: {
+                                    onRemoveMessage(message)
+                                }) {
+                                    Label("Xoá tin nhắn", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             }
