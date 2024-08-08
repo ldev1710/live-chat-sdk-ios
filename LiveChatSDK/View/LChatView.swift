@@ -82,6 +82,9 @@ struct LChatView: View {
                     }
                     
                     Button(action: {
+                        if(viewModel.newMessageText.isEmpty) {
+                            return
+                        }
                         viewModel.sendMessage()
                     }) {
                         Image(systemName: "paperplane.fill")

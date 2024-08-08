@@ -85,7 +85,7 @@ struct LCMessageView: View {
                 .font(.caption)
                 .foregroundColor(.gray)
         }
-        .frame(maxWidth: .infinity, alignment: message.from.id == UserDefaults.standard.string(forKey: "currVisitorJid") ? .trailing : .leading)
+        .frame(maxWidth: .infinity, alignment: message.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading)
     }
 }
 
