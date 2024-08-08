@@ -30,12 +30,6 @@ struct LCMessageView: View {
                         }) {
                             Label("Sao chép", systemImage: "doc.on.doc")
                         }
-                        
-                        Button(action: {
-                            onRemoveMessage(message)
-                        }) {
-                            Label("Xoá tin nhắn", systemImage: "trash")
-                        }
                     }
             } else if message.content.contentType == "file" {
                 if let contents = message.content.contentMessage as? [LCAttachment]{

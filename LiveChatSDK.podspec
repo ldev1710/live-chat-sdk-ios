@@ -12,4 +12,5 @@ spec.source = { :git => "https://github.com/ldev1710/live-chat-sdk-ios.git", :ta
 spec.source_files = "LiveChatSDK/**/*.{swift}"
 spec.dependency 'Firebase'
 spec.dependency 'SocketIO'
+spec.ios.deployment_target = '14.0'
 end
