@@ -184,9 +184,10 @@ struct LChatView: View {
         } else if(state == LCSendMessageEnum.SENT_SUCCESS){
             let indexFound = viewModel.messages.firstIndex(where: {$0?.lcMessage.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
+                LCLog.logI(message: "Found \(indexFound)")
                 viewModel.messages[indexFound!]?.status = LCStatusMessage.sent
-                viewModel.messages.reverse()
-                viewModel.messages.reverse()
+                viewModel.messages = viewModel.messages.reversed()
+                viewModel.messages = viewModel.messages.reversed()
             }
         }
     }
