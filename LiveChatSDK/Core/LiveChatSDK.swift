@@ -30,6 +30,12 @@ public class LiveChatSDK {
     private static var lcSession: LCSession?
     private static var lcUser: LCUser?
     private static var accessToken: String!
+    private static var isReceiveFromSocket = false
+    private static var isReceiveFromFCM = false
+    
+    public static func isReceiveMessageFromFCM() -> Bool{
+        return isReceiveFromFCM
+    }
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -87,6 +93,22 @@ public class LiveChatSDK {
                 }
                 socketClient!.on(LCConstant.RECEIVE_MESSAGE){
                     data, ack in
+                    if(!isReceiveFromSocket) {return}
+                    let jsonRaw = data[0] as! [String: Any]
+                    let messageRaw = jsonRaw["data"] as! [String:Any]
+                    let fromRaw = messageRaw["from"] as! [String:Any]
+                    let contentRaw = messageRaw["content"] as! [String:Any]
+                    let lcMessage = LCMessage(
+                        id: messageRaw["id"] as! Int,
+                        mappingId: nil,
+                        content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                        from: LCSender(
+                            id: fromRaw["id"] as! String,
+                            name: fromRaw["name"] as! String
+                        ),
+                        timeCreated: messageRaw["created_at"] as! String
+                    )
+                    observingMessage(lcMesasge: lcMessage)
                     
                 }
                 socketClient!.on(LCConstant.CONFIRM_SEND_MESSAGE){
@@ -95,8 +117,10 @@ public class LiveChatSDK {
                     let messageRaw = jsonRaw["data"] as! [String:Any]
                     let fromRaw = messageRaw["from"] as! [String:Any]
                     let contentRaw = messageRaw["content"] as! [String:Any]
+                    let mappingId = messageRaw["mapping_id"] as! String
                     let lCMessage = LCMessage(
                         id: messageRaw["id"] as! Int,
+                        mappingId: mappingId,
                         content: LCParseUtil.contentFrom(contentRaw: contentRaw),
                         from: LCSender(
                             id: fromRaw["id"] as! String,
@@ -130,6 +154,7 @@ public class LiveChatSDK {
                     let fromRaw = jsonMessage["from"] as! [String:Any]
                     let message = LCMessage(
                         id: jsonMessage["id"] as! Int,
+                        mappingId: nil,
                         content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
                         from: LCSender(id: fromRaw["id"] as! String, name: fromRaw["name"] as! String),
                         timeCreated: jsonMessage["created_at"] as! String
@@ -141,6 +166,12 @@ public class LiveChatSDK {
             socket!.connect()
         })
     }
+    
+    public static func setMessageReceiveSource(sources: [LCMessageReceiveSource]){
+        isReceiveFromFCM = sources.contains(LCMessageReceiveSource.fcm)
+        isReceiveFromSocket = sources.contains(LCMessageReceiveSource.socket)
+    }
+    
     
     public static func viewEngine() -> some View {
         if(!isValid()){
@@ -238,6 +269,7 @@ public class LiveChatSDK {
             observingSendMessage(state: LCSendMessageEnum.SENDING, message: nil, errorMessage: nil)
             var body:[String:Any] = [:]
             body[base64(text: "groupid")] = currLCAccount?.groupId
+            body[base64(text: "mapping_id")] = UUID().uuidString
             body[base64(text: "host_name")] = currLCAccount?.hostName
             body[base64(text: "body")] = message.content
             body[base64(text: "add_message_archive")] = ""

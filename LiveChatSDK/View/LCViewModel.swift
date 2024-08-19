@@ -8,7 +8,7 @@
 import Foundation
 
 class LChatViewModel: ObservableObject {
-    @Published var messages: [LCMessage] = []
+    @Published var messages: [LCMessageEntity?] = []
     @Published var newMessageText: String = ""
     
     func sendMessage() {

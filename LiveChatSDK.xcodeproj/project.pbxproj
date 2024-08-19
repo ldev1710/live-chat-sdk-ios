@@ -60,6 +60,9 @@
 		C1BF928E2C588DC4009FBCED /* LCMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF928D2C588DC4009FBCED /* LCMessageView.swift */; };
 		C1BF92902C588FFE009FBCED /* LCImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */; };
 		C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92912C58901B009FBCED /* LCURLImage.swift */; };
+		C1CC4A5F2C72EEA300BD0E8E /* LCMessageReceiveSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CC4A5E2C72EEA300BD0E8E /* LCMessageReceiveSource.swift */; };
+		C1CC4A612C72FD3900BD0E8E /* LCMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CC4A602C72FD3900BD0E8E /* LCMessageEntity.swift */; };
+		C1CC4A632C72FD8C00BD0E8E /* LCStatusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CC4A622C72FD8C00BD0E8E /* LCStatusMessage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -107,6 +110,9 @@
 		C1BF928D2C588DC4009FBCED /* LCMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessageView.swift; sourceTree = "<group>"; };
 		C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCImageLoader.swift; sourceTree = "<group>"; };
 		C1BF92912C58901B009FBCED /* LCURLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCURLImage.swift; sourceTree = "<group>"; };
+		C1CC4A5E2C72EEA300BD0E8E /* LCMessageReceiveSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessageReceiveSource.swift; sourceTree = "<group>"; };
+		C1CC4A602C72FD3900BD0E8E /* LCMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCMessageEntity.swift; sourceTree = "<group>"; };
+		C1CC4A622C72FD8C00BD0E8E /* LCStatusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCStatusMessage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +197,8 @@
 				C137129B2C4DFABB00D0D9FE /* LCMessageSend.swift */,
 				C137129D2C4DFAE400D0D9FE /* LCMessage.swift */,
 				C137129F2C4DFB2C00D0D9FE /* LCContent.swift */,
+				C1CC4A602C72FD3900BD0E8E /* LCMessageEntity.swift */,
+				C1CC4A622C72FD8C00BD0E8E /* LCStatusMessage.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -226,6 +234,7 @@
 				C13712AA2C4DFDDF00D0D9FE /* LCInitialEnum.swift */,
 				C13712AC2C4DFE6D00D0D9FE /* LCAccount.swift */,
 				C13712AE2C4DFEBD00D0D9FE /* LCSupportType.swift */,
+				C1CC4A5E2C72EEA300BD0E8E /* LCMessageReceiveSource.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -440,6 +449,7 @@
 				C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */,
 				C1BF928E2C588DC4009FBCED /* LCMessageView.swift in Sources */,
 				C13712A42C4DFB8700D0D9FE /* LCFile.swift in Sources */,
+				C1CC4A5F2C72EEA300BD0E8E /* LCMessageReceiveSource.swift in Sources */,
 				C1BF928A2C588D14009FBCED /* LChatViewController.swift in Sources */,
 				C137129A2C4DFA9400D0D9FE /* LCSender.swift in Sources */,
 				C14654D82C4FB7AB00A66B9B /* LCParseUtil.swift in Sources */,
@@ -447,6 +457,8 @@
 				C1BF92862C588BC9009FBCED /* LChatView.swift in Sources */,
 				C13712A82C4DFCEB00D0D9FE /* LCProtocol.swift in Sources */,
 				C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */,
+				C1CC4A612C72FD3900BD0E8E /* LCMessageEntity.swift in Sources */,
+				C1CC4A632C72FD8C00BD0E8E /* LCStatusMessage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

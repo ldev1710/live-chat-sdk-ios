@@ -10,9 +10,13 @@ import SwiftUI
 import MobileCoreServices
 import PhotosUI
 
-extension LCMessage : Equatable {
-    public static func ==(lhs: LCMessage, rhs: LCMessage) -> Bool {
+extension LCMessageEntity : Hashable {
+    public static func ==(lhs: LCMessageEntity, rhs: LCMessageEntity) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
@@ -26,28 +30,59 @@ struct LChatView: View {
     @State private var showImagePicker = false
     @State private var selectedFile: [URL] = []
     @State private var selectedImages: [URL] = []
+    @State private var isFetchingMore = false
+    @State private var page = 1
+    @State private var isCanFetchMore = true
+    @State private var isHaveGot = false
+    @State private var scrollPosition: CGPoint = .zero
+    @State private var limit = 5
+    @State private var currMessage: LCMessageEntity?
     
     var body: some View {
         VStack {
-            ScrollView {
-                ScrollViewReader { value in
-                    ForEach(viewModel.messages) { message in
-                        LCMessageView(message: message,onRemoveMessage: self.onRemoveMessage)
-                            .padding(.vertical, 4)
-                    }.onChange(of: viewModel.messages) { _ in
-                        value.scrollTo(viewModel.messages.count - 1)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewModel.messages, id: \.self) { message in
+                            if message == nil {
+                                ProgressView()
+                                    .padding()
+                                    .onAppear {
+                                        if isHaveGot {
+                                            isHaveGot = false
+                                            return
+                                        }
+                                        isFetchingMore = true
+                                        page += 1
+                                        print("DEBUGLM: Load more: \(page)")
+                                        LiveChatFactory.getMessages(offset: page * limit, limit: limit)
+                                    }
+                            } else {
+                                LCMessageView(message: message!)
+                                    .padding(.vertical, 4)
+                                    .background(GeometryReader { geo in
+                                        Color.clear.onAppear {
+                                            if viewModel.messages.last == message {
+                                                DispatchQueue.main.async {
+                                                    proxy.scrollTo(message, anchor: .bottom)
+                                                }
+                                            }
+                                        }
+                                    })
+                            }
+                        }
                     }
                 }
             }
             .padding(.horizontal)
-            
+            Spacer()
             GeometryReader {
                 geometry in
                 HStack {
                     TextField("Type a message", text: $viewModel.newMessageText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: geometry.size.width * 0.65)
-                        
+                    
                     Button(action: {
                         showFilePicker.toggle()
                     }) {
@@ -82,9 +117,6 @@ struct LChatView: View {
                     }
                     
                     Button(action: {
-                        if(viewModel.newMessageText.isEmpty) {
-                            return
-                        }
                         viewModel.sendMessage()
                     }) {
                         Image(systemName: "paperplane.fill")
@@ -96,11 +128,6 @@ struct LChatView: View {
             .padding([.leading,.trailing],8)
         }
         .onAppear(perform: {
-            let photos = PHPhotoLibrary.authorizationStatus()
-            if photos == .notDetermined {
-                PHPhotoLibrary.requestAuthorization({status in
-                })
-            }
             listener = LCListener(
                 onReceiveMessage: self.onReceiveMessage,
                 onGotDetailConversation: self.onGotDetailConversation,
@@ -110,20 +137,30 @@ struct LChatView: View {
                 onSendMessageStateChange: self.onSendMessageStateChange
             )
             LiveChatFactory.addEventListener(listener: listener!)
-            LiveChatFactory.getMessages()
+            LiveChatFactory.getMessages(limit: limit)
         })
     }
     
-    func onRemoveMessage(lcMessage: LCMessage) {
-        viewModel.messages.remove(at: viewModel.messages.firstIndex(of: lcMessage)!)
-    }
-    
     func onReceiveMessage(lcMessage: LCMessage) {
-        viewModel.messages.append(lcMessage)
+        viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent))
     }
     
     func onGotDetailConversation(messages: [LCMessage]) {
-        viewModel.messages = messages.reversed()
+        isHaveGot = true
+        isCanFetchMore = messages.count >= 5
+        print("DEBUGLM: isCanFetchMore: \(isCanFetchMore)")
+        if(isFetchingMore){
+            currMessage = viewModel.messages[1]
+            var tmp: [LCMessageEntity?] = []
+            for(index,message) in messages.enumerated() {
+                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
+            }
+            viewModel.messages.insert(contentsOf: tmp.reversed(),at: 1)
+            isFetchingMore = false
+        } else {
+            viewModel.messages = messages.reversed()
+            viewModel.messages.insert(nil,at: 0)
+        }
         isFetching = false
     }
     
@@ -153,7 +190,6 @@ struct LChatView: View {
                     try data.write(to: filename)
                     urls.append(filename)
                 } catch {
-                    LCLog.logI(message: "Error when copying image: \(error)")
                 }
             }
         }
@@ -167,6 +203,10 @@ struct LChatView: View {
     }
 }
 
-#Preview{
-    LChatView()
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint = .zero
+    
+    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
+    }
 }

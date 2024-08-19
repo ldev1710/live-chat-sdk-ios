@@ -57,4 +57,8 @@ public class LiveChatFactory {
     public static func viewEngine() -> some View {
         return LiveChatSDK.viewEngine()
     }
+    
+    public static func setMessageReceiveSource(sources: [LCMessageReceiveSource]){
+        LiveChatSDK.setMessageReceiveSource(sources: sources)
+    }
 }
