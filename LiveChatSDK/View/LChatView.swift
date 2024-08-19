@@ -43,7 +43,7 @@ struct LChatView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack {
-                        ForEach(viewModel.messages, id: \.self) { message in
+                        ForEach(Array(viewModel.messages.enumerated()), id: \.offset) { index,message in
                             if message == nil {
                                 ProgressView()
                                     .padding()
@@ -58,7 +58,7 @@ struct LChatView: View {
                                         LiveChatFactory.getMessages(offset: page * limit, limit: limit)
                                     }
                             } else {
-                                LCMessageView(message: message!)
+                                LCMessageView(message: message!,messageSize: viewModel.messages.count, messagePosition: index)
                                     .padding(.vertical, 4)
                                     .background(GeometryReader { geo in
                                         Color.clear.onAppear {
@@ -158,7 +158,11 @@ struct LChatView: View {
             viewModel.messages.insert(contentsOf: tmp.reversed(),at: 1)
             isFetchingMore = false
         } else {
-            viewModel.messages = messages.reversed()
+            var tmp: [LCMessageEntity?] = []
+            for(index,message) in messages.enumerated() {
+                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
+            }
+            viewModel.messages = tmp.reversed()
             viewModel.messages.insert(nil,at: 0)
         }
         isFetching = false
@@ -175,8 +179,13 @@ struct LChatView: View {
     }
     
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
-        if(state == LCSendMessageEnum.SENT_SUCCESS){
-            viewModel.messages.append(message!)
+        if(state == LCSendMessageEnum.SENDING) {
+            viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
+        } else if(state == LCSendMessageEnum.SENT_SUCCESS){
+            let indexFound = viewModel.messages.firstIndex(where: {$0?.lcMessage.mappingId == message?.mappingId})
+            if(indexFound != nil && indexFound != -1){
+                viewModel.messages[indexFound!]?.status = LCStatusMessage.sent
+            }
         }
     }
     

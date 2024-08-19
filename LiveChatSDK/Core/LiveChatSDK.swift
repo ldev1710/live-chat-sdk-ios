@@ -395,6 +395,7 @@ public class LiveChatSDK {
                 let contentRaw = dataDict["content"] as! [String: Any]
                 let lcMessage = LCMessage(
                     id: dataDict["id"] as! Int,
+                    mappingId: dataDict["mapping_id"] as? String,
                     content: LCParseUtil.contentFrom(contentRaw: contentRaw),
                     from: LCSender(
                         id: fromRaw["id"] as! String,
