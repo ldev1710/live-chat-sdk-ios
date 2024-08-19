@@ -185,6 +185,7 @@ struct LChatView: View {
             let indexFound = viewModel.messages.firstIndex(where: {$0?.lcMessage.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
                 viewModel.messages[indexFound!]?.status = LCStatusMessage.sent
+                viewModel.messages = viewModel.messages
             }
         }
     }
