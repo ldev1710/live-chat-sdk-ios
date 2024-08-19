@@ -14,8 +14,8 @@ public class LiveChatFactory {
         LiveChatSDK.initializeSDK()
     }
     
-    public static func sendFileMessage(paths: [URL]){
-        LiveChatSDK.sendFileMessage(paths: paths)
+    public static func sendFileMessage(paths: [URL],contentType: String /* 'image' or 'file' */){
+        LiveChatSDK.sendFileMessage(paths: paths,contentType: contentType)
     }
     
     public static func initializeSession(user: LCUser, supportType: LCSupportType){

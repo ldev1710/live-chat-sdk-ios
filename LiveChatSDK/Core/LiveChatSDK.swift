@@ -194,7 +194,7 @@ public class LiveChatSDK {
         self.lcSession = lcSession
     }
     
-    public static func sendFileMessage(paths: [URL]){
+    public static func sendFileMessage(paths: [URL],contentType: String){
         if(!isValid()) {
             return
         }
@@ -204,10 +204,13 @@ public class LiveChatSDK {
         }
         let url = URL(string: "https://s01-livechat-dev.midesk.vn/upload")!
         
+        let uuid = UUID().uuidString
+        
         let parameters:[String:String] = [
             "add_message_archive": "",
             "groupid": String(currLCAccount?.groupId ?? 0),
             "reply":"0",
+            "mapping_id": uuid,
             "type":"\"live-chat-sdk\"",
             "from": "\"\(lcSession!.visitorJid)\"",
             "name": "\"\(lcUser!.fullName)\"",
@@ -216,7 +219,22 @@ public class LiveChatSDK {
             "visitor_jid": "\"\(lcSession!.visitorJid)\"",
             "is_file":"1",
         ]
-
+        
+        let lcMessage = LCMessage(
+            id: -1,
+            mappingId: uuid,
+            content: LCContent(
+                contentType: contentType,
+                contentMessage: paths
+            ),
+            from: LCSender(
+                id: lcSession!.visitorJid,
+                name: lcUser!.fullName
+            ),
+            timeCreated: formattedCurrDate()
+        )
+        
+        observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil)
         uploadFiles(url: url, files: paths, parameters: parameters)
 
     }
@@ -266,10 +284,10 @@ public class LiveChatSDK {
     
     public static func sendMessage(message: LCMessageSend){
         if(isValid()){
-            observingSendMessage(state: LCSendMessageEnum.SENDING, message: nil, errorMessage: nil)
             var body:[String:Any] = [:]
+            let uuid = UUID().uuidString
             body[base64(text: "groupid")] = currLCAccount?.groupId
-            body[base64(text: "mapping_id")] = UUID().uuidString
+            body[base64(text: "mapping_id")] = uuid
             body[base64(text: "host_name")] = currLCAccount?.hostName
             body[base64(text: "body")] = message.content
             body[base64(text: "add_message_archive")] = ""
@@ -282,6 +300,21 @@ public class LiveChatSDK {
             body[base64(text: "visitor_jid")] = lcSession!.visitorJid
             body[base64(text: "is_file")] = 0
             socketClient?.emit(LCConstant.SEND_MESSAGE,body)
+
+            observingSendMessage(
+                state: LCSendMessageEnum.SENDING,
+                message: LCMessage(
+                    id: -1,
+                    mappingId: uuid,
+                    content: LCContent(
+                        contentType: "text",
+                        contentMessage: message.content
+                    ),
+                    from: LCSender(id: lcSession!.visitorJid, name: lcUser!.fullName),
+                    timeCreated: formattedCurrDate()
+                ),
+                errorMessage: nil
+            )
         }
     }
     
@@ -379,7 +412,7 @@ public class LiveChatSDK {
             let task = session.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     LCLog.logI(message: "Error: \(String(describing: error))")
-                    observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: nil, errorMessage: String(describing: error))
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: String(describing: error))
                     return
                 }
                 
@@ -443,6 +476,13 @@ public class LiveChatSDK {
     
     public static func enableDebug(isEnable: Bool){
         isDebuging = isEnable
+    }
+    
+    private static func formattedCurrDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDate = Date()
+        return dateFormatter.string(from: currentDate)
     }
     
 }

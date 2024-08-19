@@ -16,7 +16,7 @@ class LChatViewModel: ObservableObject {
         newMessageText = ""
     }
     
-    func sendFile(fileURL: [URL]) {
-        LiveChatFactory.sendFileMessage(paths: fileURL)
+    func sendFile(fileURL: [URL],contentType: String) {
+        LiveChatFactory.sendFileMessage(paths: fileURL,contentType: contentType)
     }
 }

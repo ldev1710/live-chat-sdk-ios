@@ -94,7 +94,7 @@ struct LChatView: View {
                         LCDocumentPicker(
                             didPickDocuments: { urls in
                                 selectedFile = urls
-                                viewModel.sendFile(fileURL: selectedFile)
+                                viewModel.sendFile(fileURL: selectedFile,contentType: "file")
                             }
                         )
                     }
@@ -111,7 +111,7 @@ struct LChatView: View {
                             images in
                             saveImagesToURLs(images: images){
                                 urls in
-                                viewModel.sendFile(fileURL: urls)
+                                viewModel.sendFile(fileURL: urls,contentType: "image")
                             }
                         }
                     }
