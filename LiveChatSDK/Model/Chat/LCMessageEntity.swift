@@ -8,6 +8,7 @@
 import Foundation
 
 public class LCMessageEntity : Identifiable{
+    public var id: UUID = UUID()
     public var lcMessage: LCMessage
     public var status: LCStatusMessage
     
