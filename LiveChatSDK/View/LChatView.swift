@@ -33,45 +33,40 @@ struct LChatView: View {
     @State private var isFetchingMore = false
     @State private var page = 1
     @State private var isCanFetchMore = true
-    @State private var isHaveGot = false
+    @State private var isInit = true
     @State private var scrollPosition: CGPoint = .zero
-    @State private var limit = 5
-    @State private var currMessage: LCMessageEntity?
+    @State private var limit = 10
+    @State private var msgScrolling: LCMessageEntity?
+    @State private var proxyGlo: ScrollViewProxy?
     
     var body: some View {
         VStack {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack {
-                        ForEach(Array(viewModel.messages.enumerated()), id: \.offset) { index,message in
-                            if message == nil {
-                                ProgressView()
-                                    .padding()
-                                    .onAppear {
-                                        if isHaveGot {
-                                            isHaveGot = false
-                                            return
-                                        }
-                                        isFetchingMore = true
-                                        page += 1
-                                        print("DEBUGLM: Load more: \(page)")
-                                        LiveChatFactory.getMessages(offset: page * limit, limit: limit)
+                        if(isCanFetchMore){
+                            ProgressView()
+                                .padding()
+                                .onAppear {
+                                    if(isInit){
+                                        isInit = false
+                                        return
                                     }
-                            } else {
-                                LCMessageView(message: message!,messageSize: viewModel.messages.count, messagePosition: index)
-                                    .padding(.vertical, 4)
-                                    .background(GeometryReader { geo in
-                                        Color.clear.onAppear {
-                                            if viewModel.messages.last == message {
-                                                DispatchQueue.main.async {
-                                                    proxy.scrollTo(message, anchor: .bottom)
-                                                }
-                                            }
-                                        }
-                                    })
-                            }
+                                    isFetchingMore = true
+                                    page += 1
+                                    print("DEBUGLM: Load more: \(page)")
+                                    LiveChatFactory.getMessages(offset: page * limit, limit: limit)
+                                }
+                        }
+                        ForEach(viewModel.messages, id: \.self.id) { message in
+                            LCMessageView(message: $viewModel.messages[viewModel.messages.firstIndex(of: message)!],messageSize: viewModel.messages.count, messagePosition: viewModel.messages.firstIndex(of: message) ?? -1)
+                                .padding(.vertical, 4)
+                                .id(message.id)
                         }
                     }
+                }
+                .onAppear {
+                    proxyGlo = proxy
                 }
             }
             .padding(.horizontal)
@@ -111,7 +106,7 @@ struct LChatView: View {
                             images in
                             saveImagesToURLs(images: images){
                                 urls in
-                                viewModel.sendFile(fileURL: urls,contentType: "image")
+                                viewModel.sendFile(fileURL: urls, contentType: "image")
                             }
                         }
                     }
@@ -136,6 +131,7 @@ struct LChatView: View {
                 onInitialSessionStateChanged: self.onInitialSessionStateChanged,
                 onSendMessageStateChange: self.onSendMessageStateChange
             )
+            LiveChatFactory.setMessageReceiveSource(sources: [.socket])
             LiveChatFactory.addEventListener(listener: listener!)
             LiveChatFactory.getMessages(limit: limit)
         })
@@ -143,29 +139,36 @@ struct LChatView: View {
     
     func onReceiveMessage(lcMessage: LCMessage) {
         viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent))
+        scrollToMsg(msg: viewModel.messages.last!)
     }
     
     func onGotDetailConversation(messages: [LCMessage]) {
-        isHaveGot = true
-        isCanFetchMore = messages.count >= 5
-        print("DEBUGLM: isCanFetchMore: \(isCanFetchMore)")
+        isCanFetchMore = messages.count >= limit
         if(isFetchingMore){
-            currMessage = viewModel.messages[1]
-            var tmp: [LCMessageEntity?] = []
-            for(index,message) in messages.enumerated() {
+            var tmp: [LCMessageEntity] = []
+            for(_, message) in messages.enumerated() {
                 tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
             }
-            viewModel.messages.insert(contentsOf: tmp.reversed(),at: 1)
+            let msgTmp = viewModel.messages.first!
+            viewModel.messages.insert(contentsOf: tmp.reversed(),at: 0)
+            scrollToMsg(msg: msgTmp)
             isFetchingMore = false
         } else {
-            var tmp: [LCMessageEntity?] = []
-            for(index,message) in messages.enumerated() {
+            var tmp: [LCMessageEntity] = []
+            for(_, message) in messages.enumerated() {
                 tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
             }
             viewModel.messages = tmp.reversed()
-            viewModel.messages.insert(nil,at: 0)
+            scrollToMsg(msg: viewModel.messages.last!)
         }
         isFetching = false
+    }
+    
+    func scrollToMsg(msg: LCMessageEntity){
+        DispatchQueue.main.async {
+            proxyGlo!.scrollTo(msg.id, anchor: .bottom)
+        }
+        
     }
     
     func onInitSDKStateChange(state: LCInitialEnum, message: String) {
@@ -181,20 +184,20 @@ struct LChatView: View {
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
         if(state == LCSendMessageEnum.SENDING) {
             viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
+            scrollToMsg(msg: viewModel.messages.last!)
         } else if(state == LCSendMessageEnum.SENT_SUCCESS){
-            let indexFound = viewModel.messages.firstIndex(where: {$0?.lcMessage.mappingId == message?.mappingId})
+            let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
-                LCLog.logI(message: "Found \(indexFound)")
-                viewModel.messages[indexFound!]?.status = LCStatusMessage.sent
-                viewModel.messages = viewModel.messages.reversed()
-                viewModel.messages = viewModel.messages.reversed()
+                viewModel.messages[indexFound!].status = LCStatusMessage.sent
+                viewModel.messages.reverse()
+                viewModel.messages.reverse()
+                scrollToMsg(msg: viewModel.messages.last!)
             }
         }
     }
     
     func saveImagesToURLs(images: [UIImage], completion: @escaping ([URL]) -> Void) {
         var urls: [URL] = []
-        
         for (index, image) in images.enumerated() {
             if let data = image.jpegData(compressionQuality: 1.0) {
                 let filename = getDocumentsDirectory().appendingPathComponent("image\(index).jpg")

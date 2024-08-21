@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct LCMessageView: View {
-    let message: LCMessageEntity
+    @Binding var message: LCMessageEntity
     let messageSize: Int
     let messagePosition: Int
     
@@ -73,20 +73,21 @@ struct LCMessageView: View {
             Text(message.lcMessage.timeCreated)
                 .font(.caption)
                 .foregroundColor(.gray)
-            if(message.status == LCStatusMessage.sending){
-                Text("Đang gửi")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            } else {
-                if(messagePosition == messageSize - 1){
-                    Text("Đã gửi")
+            if(message.lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid) {
+                if(message.status == LCStatusMessage.sending){
+                    Text("Đang gửi")
                         .font(.caption)
                         .foregroundColor(.gray)
+                } else {
+                    if(messagePosition == messageSize - 1){
+                        Text("Đã gửi")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: message.lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading)
-        
     }
 }
 

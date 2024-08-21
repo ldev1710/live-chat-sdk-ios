@@ -192,6 +192,9 @@ public class LiveChatSDK {
     public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
         self.lcUser = lcUser
         self.lcSession = lcSession
+        Messaging.messaging().subscribe(toTopic: self.lcSession!.sessionId) { error in
+            LCLog.logI(message: "Has subscribe to topic: \(self.lcSession!.sessionId)")
+        }
     }
     
     public static func sendFileMessage(paths: [URL],contentType: String){
