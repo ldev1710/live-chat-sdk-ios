@@ -141,27 +141,26 @@ public class LiveChatSDK {
                     }
                     observingInitialSession(sucess: success, lcSession: LCSession(sessionId: sessionId, visitorJid: visitorJid))
                 }
-                socketClient?.connect()
-            }
-            
-            socket!.on(LCConstant.RESULT_GET_MESSAGES) {
-                data, ack in
-                let jsonData = data[0] as! [String: Any]
-                let rawMessages = jsonData["data"] as! [Any]
-                var messages: [LCMessage] = []
-                for rawMessage in rawMessages {
-                    let jsonMessage = rawMessage as! [String:Any]
-                    let fromRaw = jsonMessage["from"] as! [String:Any]
-                    let message = LCMessage(
-                        id: jsonMessage["id"] as! Int,
-                        mappingId: nil,
-                        content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
-                        from: LCSender(id: fromRaw["id"] as! String, name: fromRaw["name"] as! String),
-                        timeCreated: jsonMessage["created_at"] as! String
-                    )
-                    messages.append(message)
+                socketClient!.on(LCConstant.RESULT_GET_MESSAGES) {
+                    data, ack in
+                    let jsonData = data[0] as! [String: Any]
+                    let rawMessages = jsonData["data"] as! [Any]
+                    var messages: [LCMessage] = []
+                    for rawMessage in rawMessages {
+                        let jsonMessage = rawMessage as! [String:Any]
+                        let fromRaw = jsonMessage["from"] as! [String:Any]
+                        let message = LCMessage(
+                            id: jsonMessage["id"] as! Int,
+                            mappingId: nil,
+                            content: LCParseUtil.contentFrom(contentRaw: jsonMessage["content"] as! [String:Any]),
+                            from: LCSender(id: fromRaw["id"] as! String, name: fromRaw["name"] as! String),
+                            timeCreated: jsonMessage["created_at"] as! String
+                        )
+                        messages.append(message)
+                    }
+                    observingGotMessages(messages: messages)
                 }
-                observingGotMessages(messages: messages)
+                socketClient?.connect()
             }
             socket!.connect()
         })
@@ -331,7 +330,7 @@ public class LiveChatSDK {
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
             LCLog.logI(message: "Start get message")
-            socket?.emit(LCConstant.GET_MESSAGES,body)
+            socketClient?.emit(LCConstant.GET_MESSAGES,body)
         }
     }
     
