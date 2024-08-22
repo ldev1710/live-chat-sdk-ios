@@ -212,7 +212,7 @@ public class LiveChatSDK {
             "add_message_archive": "",
             "groupid": String(currLCAccount?.groupId ?? 0),
             "reply":"0",
-            "mapping_id": uuid,
+            "mapping_id": "\"\(uuid)\"",
             "type":"\"live-chat-sdk\"",
             "from": "\"\(lcSession!.visitorJid)\"",
             "name": "\"\(lcUser!.fullName)\"",
@@ -428,6 +428,17 @@ public class LiveChatSDK {
                 let isError = respDict["error"] as! Bool
                 if(isError) {
                     let errorMsg = respDict["message"] as! String
+                    let dataDict = respDict["data"] as! [String: Any]
+                    let lcMessage = LCMessage(
+                        id: -1,
+                        mappingId: dataDict["mapping_id"] as? String,
+                        content: LCParseUtil.contentFrom(contentRaw: contentRaw),
+                        from: LCSender(
+                            id: fromRaw["id"] as! String,
+                            name: fromRaw["name"] as! String
+                        ),
+                        timeCreated: dataDict["created_at"] as! String
+                    )
                     observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: errorMsg)
                     return
                 }
