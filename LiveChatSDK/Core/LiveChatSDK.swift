@@ -425,6 +425,12 @@ public class LiveChatSDK {
                 let responseString = String(data: data, encoding: .utf8)
                 let respDict = LCParseUtil.convertToDictionary(text: responseString!)
                 LCLog.logI(message: "Response: \(responseString ?? "")")
+                let isError = respDict["error"] as! Bool
+                if(isError) {
+                    let errorMsg = respDict["message"] as! String
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: errorMsg)
+                    return
+                }
                 let dataDict = respDict["data"] as! [String: Any]
                 let fromRaw = dataDict["from"] as! [String: Any]
                 let contentRaw = dataDict["content"] as! [String: Any]
