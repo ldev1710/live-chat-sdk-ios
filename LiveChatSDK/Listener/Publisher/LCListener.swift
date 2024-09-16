@@ -15,7 +15,7 @@ open class LCListener: LCProtocol {
     private var onInitSDKStateChange: (LCInitialEnum,String)->()
     private var onAuthstateChanged: (Bool,String,LCAccount?) -> ()
     private var onInitialSessionStateChanged: (Bool,LCSession) -> ()
-    private var onSendMessageStateChange: (LCSendMessageEnum,LCMessage?,String?) -> ()
+    private var onSendMessageStateChange: (LCSendMessageEnum,LCMessage?,String?,String?) -> ()
     
     public init(
         onReceiveMessage: @escaping (LCMessage)->(),
@@ -23,7 +23,7 @@ open class LCListener: LCProtocol {
         onInitSDKStateChange: @escaping (LCInitialEnum,String)->(),
         onAuthstateChanged:@escaping (Bool,String,LCAccount?) -> (),
         onInitialSessionStateChanged:@escaping (Bool,LCSession) -> (),
-        onSendMessageStateChange:@escaping (LCSendMessageEnum,LCMessage?,String?) -> ()
+        onSendMessageStateChange:@escaping (LCSendMessageEnum,LCMessage?,String?,String?) -> ()
     ) {
         self.onReceiveMessage = onReceiveMessage
         self.onGotDetailConversation = onGotDetailConversation
@@ -53,7 +53,7 @@ open class LCListener: LCProtocol {
         self.onInitialSessionStateChanged(success,lcSession)
     }
     
-    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
-        self.onSendMessageStateChange(state,message,errorMessage)
+    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
+        self.onSendMessageStateChange(state,message,errorMessage,mappingId)
     }
 }

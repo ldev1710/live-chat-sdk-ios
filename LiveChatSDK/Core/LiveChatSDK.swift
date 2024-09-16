@@ -128,7 +128,7 @@ public class LiveChatSDK {
                         ),
                         timeCreated: messageRaw["created_at"] as! String
                     )
-                    observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil)
+                    observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil,mappingId: lCMessage.mappingId)
                 }
                 socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION){
                     data, ack in
@@ -236,7 +236,7 @@ public class LiveChatSDK {
             timeCreated: formattedCurrDate()
         )
         
-        observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil)
+        observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil,mappingId: lcMessage.mappingId)
         uploadFiles(url: url, files: paths, parameters: parameters)
 
     }
@@ -315,7 +315,8 @@ public class LiveChatSDK {
                     from: LCSender(id: lcSession!.visitorJid, name: lcUser!.fullName),
                     timeCreated: formattedCurrDate()
                 ),
-                errorMessage: nil
+                errorMessage: nil,
+                mappingId: uuid
             )
         }
     }
@@ -372,9 +373,9 @@ public class LiveChatSDK {
         }
     }
     
-    public static func observingSendMessage(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?){
+    public static func observingSendMessage(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?){
         for listener in listeners {
-            listener.onSendMessageStateChange(state: state, message: message, errorMessage: errorMessage)
+            listener.onSendMessageStateChange(state: state, message: message, errorMessage: errorMessage,mappingId: mappingId)
         }
     }
     
@@ -414,7 +415,7 @@ public class LiveChatSDK {
             let task = session.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     LCLog.logI(message: "Error: \(String(describing: error))")
-                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: String(describing: error))
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: String(describing: error),mappingId: nil)
                     return
                 }
                 
@@ -429,17 +430,8 @@ public class LiveChatSDK {
                 if(isError) {
                     let errorMsg = respDict["message"] as! String
                     let dataDict = respDict["data"] as! [String: Any]
-                    let lcMessage = LCMessage(
-                        id: -1,
-                        mappingId: dataDict["mapping_id"] as? String,
-                        content: LCParseUtil.contentFrom(contentRaw: contentRaw),
-                        from: LCSender(
-                            id: fromRaw["id"] as! String,
-                            name: fromRaw["name"] as! String
-                        ),
-                        timeCreated: dataDict["created_at"] as! String
-                    )
-                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: errorMsg)
+                    let mappingId = dataDict["mapping_id"] as! String
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: errorMsg, mappingId:mappingId)
                     return
                 }
                 let dataDict = respDict["data"] as! [String: Any]
@@ -455,7 +447,7 @@ public class LiveChatSDK {
                     ),
                     timeCreated: dataDict["created_at"] as! String
                 )
-                observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lcMessage, errorMessage: nil)
+                observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lcMessage, errorMessage: nil,mappingId: lcMessage.mappingId)
             }
             
             task.resume()

@@ -13,5 +13,5 @@ protocol LCProtocol {
     func onAuthstateChanged(success: Bool, message: String, lcAccount:LCAccount?)
     func onInitialSessionStateChanged(success: Bool, lcSession: LCSession)
     func onGotDetailConversation(messages: [LCMessage])
-    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?)
+    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?)
 }
