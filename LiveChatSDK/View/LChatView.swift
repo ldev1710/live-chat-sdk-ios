@@ -181,7 +181,7 @@ struct LChatView: View {
         
     }
     
-    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?) {
+    func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
         if(state == LCSendMessageEnum.SENDING) {
             viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
             scrollToMsg(msg: viewModel.messages.last!)

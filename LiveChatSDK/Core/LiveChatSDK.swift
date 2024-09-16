@@ -238,7 +238,7 @@ public class LiveChatSDK {
         
         observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil,mappingId: lcMessage.mappingId)
         uploadFiles(url: url, files: paths, parameters: parameters)
-
+        
     }
     
     public static func initializeSession(user: LCUser, supportType: LCSupportType){
