@@ -12,13 +12,13 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/socketio/socket.io-client-swift", .upToNextMinor(from: "16.1.0")),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0")
+//        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0")
     ],
     targets: [
         .target(
             name: "LiveChatSDK",
             dependencies: [
-                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+//                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
                 .product(name: "SocketIO", package: "socket.io-client-swift")
             ],
             path: "./LiveChatSDK"
