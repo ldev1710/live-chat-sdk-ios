@@ -7,7 +7,9 @@
 
 import Foundation
 import UserNotifications
+#if canImport(Firebase)
 import Firebase
+#endif
 import UIKit
 
 open class LCMessaging: NSObject, UNUserNotificationCenterDelegate {

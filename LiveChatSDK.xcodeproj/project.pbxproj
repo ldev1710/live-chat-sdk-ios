@@ -48,7 +48,6 @@
 		C17838E22C984366001589BA /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = C17838E12C984366001589BA /* FirebaseRemoteConfig */; };
 		C17838E42C984366001589BA /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = C17838E32C984366001589BA /* FirebaseStorage */; };
 		C17838E62C984366001589BA /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = C17838E52C984366001589BA /* FirebaseStorageCombine-Community */; };
-		C17838E82C984366001589BA /* FirebaseVertexAI-Preview in Frameworks */ = {isa = PBXBuildFile; productRef = C17838E72C984366001589BA /* FirebaseVertexAI-Preview */; };
 		C18AC9EA2C37EC1900576E9D /* LiveChatSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = C18AC9E92C37EC1900576E9D /* LiveChatSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C18AC9F12C37EC3500576E9D /* LiveChatFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F02C37EC3500576E9D /* LiveChatFactory.swift */; };
 		C18AC9F42C37EC6E00576E9D /* LiveChatSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18AC9F32C37EC6E00576E9D /* LiveChatSDK.swift */; };
@@ -120,7 +119,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C17838E82C984366001589BA /* FirebaseVertexAI-Preview in Frameworks */,
 				C17838D22C984366001589BA /* FirebaseFirestoreCombine-Community in Frameworks */,
 				C17838D42C984366001589BA /* FirebaseFunctions in Frameworks */,
 				C17838E02C984366001589BA /* FirebasePerformance in Frameworks */,
@@ -370,7 +368,6 @@
 				C17838E12C984366001589BA /* FirebaseRemoteConfig */,
 				C17838E32C984366001589BA /* FirebaseStorage */,
 				C17838E52C984366001589BA /* FirebaseStorageCombine-Community */,
-				C17838E72C984366001589BA /* FirebaseVertexAI-Preview */,
 			);
 			productName = LiveChatSDK;
 			productReference = C18AC9E62C37EC1900576E9D /* LiveChatSDK.framework */;
@@ -703,8 +700,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.2.0;
+				kind = exactVersion;
+				version = 10.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -824,11 +821,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C17838BA2C984366001589BA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
-		};
-		C17838E72C984366001589BA /* FirebaseVertexAI-Preview */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C17838BA2C984366001589BA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseVertexAI-Preview";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

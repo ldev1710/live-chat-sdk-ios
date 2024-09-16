@@ -8,7 +8,9 @@
 import Foundation
 import UserNotifications
 import SocketIO
+#if canImport(Firebase)
 import Firebase
+#endif
 import SwiftUI
 import UIKit
 
