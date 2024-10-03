@@ -126,8 +126,9 @@ public class LiveChatSDK {
                     data, ack in
                     let jsonData = data[0] as! [String: Any]
                     let success = jsonData["status"] as! Bool
-                    let sessionId = jsonData["session_id"] as! String
-                    let visitorJid = jsonData["visitor_jid"] as! String
+                    let data = jsonData["data"] as! [String:Any]
+                    let sessionId = data["session_id"] as! String
+                    let visitorJid = data["visitor_jid"] as! String
                     observingInitialSession(sucess: success, lcSession: LCSession(sessionId: sessionId, visitorJid: visitorJid))
                 }
                 socketClient!.on(LCConstant.RESULT_GET_MESSAGES) {
