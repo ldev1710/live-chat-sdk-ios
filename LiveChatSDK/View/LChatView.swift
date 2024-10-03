@@ -158,7 +158,9 @@ struct LChatView: View {
                 tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
             }
             viewModel.messages = tmp.reversed()
-            scrollToMsg(msg: viewModel.messages.last!)
+            if(!viewModel.messages.isEmpty){
+                scrollToMsg(msg: viewModel.messages.last!)
+            }
         }
         isFetching = false
     }
