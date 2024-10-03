@@ -8,9 +8,6 @@
 import Foundation
 import UserNotifications
 import SocketIO
-#if canImport(Firebase)
-import Firebase
-#endif
 import SwiftUI
 import UIKit
 
@@ -32,12 +29,6 @@ public class LiveChatSDK {
     private static var lcSession: LCSession?
     private static var lcUser: LCUser?
     private static var accessToken: String!
-    private static var isReceiveFromSocket = false
-    private static var isReceiveFromFCM = false
-    
-    public static func isReceiveMessageFromFCM() -> Bool{
-        return isReceiveFromFCM
-    }
     
     public static func initializeSDK() {
         let current = UNUserNotificationCenter.current()
@@ -95,7 +86,6 @@ public class LiveChatSDK {
                 }
                 socketClient!.on(LCConstant.RECEIVE_MESSAGE){
                     data, ack in
-                    if(!isReceiveFromSocket) {return}
                     let jsonRaw = data[0] as! [String: Any]
                     let messageRaw = jsonRaw["data"] as! [String:Any]
                     let fromRaw = messageRaw["from"] as! [String:Any]
@@ -138,9 +128,6 @@ public class LiveChatSDK {
                     let success = jsonData["status"] as! Bool
                     let sessionId = jsonData["session_id"] as! String
                     let visitorJid = jsonData["visitor_jid"] as! String
-                    Messaging.messaging().subscribe(toTopic: sessionId) { error in
-                        LCLog.logI(message: "Has subscribe to topic: \(sessionId)")
-                    }
                     observingInitialSession(sucess: success, lcSession: LCSession(sessionId: sessionId, visitorJid: visitorJid))
                 }
                 socketClient!.on(LCConstant.RESULT_GET_MESSAGES) {
@@ -168,12 +155,6 @@ public class LiveChatSDK {
         })
     }
     
-    public static func setMessageReceiveSource(sources: [LCMessageReceiveSource]){
-        isReceiveFromFCM = sources.contains(LCMessageReceiveSource.fcm)
-        isReceiveFromSocket = sources.contains(LCMessageReceiveSource.socket)
-    }
-    
-    
     public static func viewEngine() -> some View {
         if(!isValid()){
             return AnyView(LCBlankView())
@@ -193,9 +174,6 @@ public class LiveChatSDK {
     public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
         self.lcUser = lcUser
         self.lcSession = lcSession
-        Messaging.messaging().subscribe(toTopic: self.lcSession!.sessionId) { error in
-            LCLog.logI(message: "Has subscribe to topic: \(self.lcSession!.sessionId)")
-        }
     }
     
     public static func sendFileMessage(paths: [URL],contentType: String){
@@ -240,30 +218,22 @@ public class LiveChatSDK {
         
         observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil,mappingId: lcMessage.mappingId)
         uploadFiles(url: url, files: paths, parameters: parameters)
-        
     }
     
-    public static func initializeSession(user: LCUser, supportType: LCSupportType){
+    public static func initializeSession(user: LCUser,tokenFcm: String, supportType: LCSupportType){
         if(isInitialized && isAvailable){
-            Messaging.messaging().token { token, error in
-              if let error = error {
-                  LCLog.logI(message: "Error fetching FCM registration token: \(error)")
-              } else if let token = token {
-                  LCLog.logI(message: token)
-                  var body:[String:Any] = [:]
-                  body[base64(text: "groupid")] = currLCAccount?.groupId
-                  body[base64(text: "access_token")] = accessToken
-                  body[base64(text: "host_name")] = currLCAccount?.hostName
-                  body[base64(text: "visitor_name")] = user.fullName
-                  body[base64(text: "visitor_email")] = user.email
-                  body[base64(text: "type")] = "live-chat-sdk"
-                  body[base64(text: "visitor_phone")] = user.phone
-                  body[base64(text: "url_visit")] = user.deviceName
-                  body[base64(text: "token")] = token
-                  body[base64(text: "support_type_id")] = supportType.id
-                  socketClient?.emit(LCConstant.INITIALIZE_SESSION,body)
-              }
-            }
+            var body:[String:Any] = [:]
+            body[base64(text: "groupid")] = currLCAccount?.groupId
+            body[base64(text: "access_token")] = accessToken
+            body[base64(text: "host_name")] = currLCAccount?.hostName
+            body[base64(text: "visitor_name")] = user.fullName
+            body[base64(text: "visitor_email")] = user.email
+            body[base64(text: "type")] = "live-chat-sdk"
+            body[base64(text: "visitor_phone")] = user.phone
+            body[base64(text: "url_visit")] = user.deviceName
+            body[base64(text: "token")] = tokenFcm
+            body[base64(text: "support_type_id")] = supportType.id
+            socketClient?.emit(LCConstant.INITIALIZE_SESSION,body)
         }
     }
     

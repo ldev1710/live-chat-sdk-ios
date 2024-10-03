@@ -15,11 +15,11 @@ public class LCParseUtil {
             let rawAttachments = contentRaw["content-message"] as! [Any]
             for rawAttachment in rawAttachments {
                 let jsonAttachment = rawAttachment as! [String:String]
-                let fileName = jsonAttachment["file-name"] as! String
+                let fileName = jsonAttachment["file-name"]! as String
                 let fileExtension = fileName.components(separatedBy: ".").last
                 lcAttachments.append(
                     LCAttachment(
-                        url: jsonAttachment["url"] as! String,
+                        url: jsonAttachment["url"]! as String,
                         fileName: fileName,
                         fileExtension: fileExtension!
                     )

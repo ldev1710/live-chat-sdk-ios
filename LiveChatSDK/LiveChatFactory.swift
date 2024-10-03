@@ -18,8 +18,8 @@ public class LiveChatFactory {
         LiveChatSDK.sendFileMessage(paths: paths,contentType: contentType)
     }
     
-    public static func initializeSession(user: LCUser, supportType: LCSupportType){
-        LiveChatSDK.initializeSession(user: user, supportType: supportType)
+    public static func initializeSession(user: LCUser,tokenFcm:String, supportType: LCSupportType){
+        LiveChatSDK.initializeSession(user: user,tokenFcm: tokenFcm, supportType: supportType)
     }
     
     public static func authorize(apiKey: String){
@@ -56,9 +56,5 @@ public class LiveChatFactory {
     
     public static func viewEngine() -> some View {
         return LiveChatSDK.viewEngine()
-    }
-    
-    public static func setMessageReceiveSource(sources: [LCMessageReceiveSource]){
-        LiveChatSDK.setMessageReceiveSource(sources: sources)
     }
 }

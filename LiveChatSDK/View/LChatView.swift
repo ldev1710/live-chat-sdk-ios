@@ -131,7 +131,6 @@ struct LChatView: View {
                 onInitialSessionStateChanged: self.onInitialSessionStateChanged,
                 onSendMessageStateChange: self.onSendMessageStateChange
             )
-            LiveChatFactory.setMessageReceiveSource(sources: [.socket])
             LiveChatFactory.addEventListener(listener: listener!)
             LiveChatFactory.getMessages(limit: limit)
         })
