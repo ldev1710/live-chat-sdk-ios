@@ -88,7 +88,7 @@ public class LiveChatSDK {
                     data, ack in
                     let jsonRaw = data[0] as! [String: Any]
                     let messageRaw = jsonRaw["data"] as! [String:Any]
-                    let fromRaw = messageRaw["from"] as! [String:Any]
+                    let fromRaw = messageRaw["sender"] as! [String:Any]
                     let contentRaw = messageRaw["content"] as! [String:Any]
                     let lcMessage = LCMessage(
                         id: messageRaw["id"] as! Int,
@@ -175,6 +175,8 @@ public class LiveChatSDK {
     public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
         self.lcUser = lcUser
         self.lcSession = lcSession
+        print("lcSession.sessionId join: \(lcSession.sessionId)")
+        socketClient?.emit(LCConstant.JOIN_SESSION, lcSession.sessionId)
     }
     
     public static func sendFileMessage(paths: [URL],contentType: String){
@@ -185,7 +187,7 @@ public class LiveChatSDK {
             LCLog.logI(message: "You are only allowed to send a maximum of 3 files")
             return
         }
-        let url = URL(string: "https://s01-livechat-dev.midesk.vn/upload")!
+        let url = URL(string: LCConstant.CLIENT_URL_SOCKET+"/uploadSDK")!
         
         let uuid = UUID().uuidString
         
@@ -399,8 +401,8 @@ public class LiveChatSDK {
                 let responseString = String(data: data, encoding: .utf8)
                 let respDict = LCParseUtil.convertToDictionary(text: responseString!)
                 LCLog.logI(message: "Response: \(responseString ?? "")")
-                let isError = respDict["error"] as! Bool
-                if(isError) {
+                let error = respDict["error"] as! Bool
+                if(error) {
                     let errorMsg = respDict["message"] as! String
                     let dataDict = respDict["data"] as! [String: Any]
                     let mappingId = dataDict["mapping_id"] as! String

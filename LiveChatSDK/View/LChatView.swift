@@ -58,10 +58,10 @@ struct LChatView: View {
                                     LiveChatFactory.getMessages(offset: page * limit, limit: limit)
                                 }
                         }
-                        ForEach(viewModel.messages, id: \.self.id) { message in
-                            LCMessageView(message: $viewModel.messages[viewModel.messages.firstIndex(of: message)!],messageSize: viewModel.messages.count, messagePosition: viewModel.messages.firstIndex(of: message) ?? -1)
+                        ForEach(viewModel.messages.indices, id: \.self) { index in
+                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index)
                                 .padding(.vertical, 4)
-                                .id(message.id)
+                                .id(viewModel.messages[index].id)
                         }
                     }
                 }
@@ -189,9 +189,8 @@ struct LChatView: View {
         } else if(state == LCSendMessageEnum.SENT_SUCCESS){
             let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
+                viewModel.messages[indexFound!].lcMessage = message!;
                 viewModel.messages[indexFound!].status = LCStatusMessage.sent
-                viewModel.messages.reverse()
-                viewModel.messages.reverse()
                 scrollToMsg(msg: viewModel.messages.last!)
             }
         }

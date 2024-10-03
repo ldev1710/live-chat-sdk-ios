@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct LCMessageView: View {
-    @Binding var message: LCMessageEntity
+    @ObservedObject var message: LCMessageEntity
     let messageSize: Int
     let messagePosition: Int
     
