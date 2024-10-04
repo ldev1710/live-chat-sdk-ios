@@ -61,7 +61,6 @@ public class LiveChatSDK {
                 let jsonData = dataResp["data"] as! [String:Any]
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 accessToken = jsonData["access_token"] as? String
-                LCLog.logI(message: "\(LCConstant.CLIENT_URL_SOCKET)")
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
                 var supportTypes: [LCSupportType] = []
                 for rawSupportType in rawSupportTypes {
@@ -100,6 +99,7 @@ public class LiveChatSDK {
                         ),
                         timeCreated: messageRaw["created_at"] as! String
                     )
+                    if(lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid) {return}
                     observingMessage(lcMesasge: lcMessage)
                     
                 }
@@ -195,13 +195,13 @@ public class LiveChatSDK {
             "add_message_archive": "",
             "groupid": String(currLCAccount?.groupId ?? 0),
             "reply":"0",
-            "mapping_id": "\"\(uuid)\"",
-            "type":"\"live-chat-sdk\"",
-            "from": "\"\(lcSession!.visitorJid)\"",
-            "name": "\"\(lcUser!.fullName)\"",
-            "session_id": "\"\(lcSession!.sessionId)\"",
-            "host_name": "\"\(currLCAccount?.hostName ?? "")\"",
-            "visitor_jid": "\"\(lcSession!.visitorJid)\"",
+            "mapping_id": uuid,
+            "type":"live-chat-sdk",
+            "from": lcSession!.visitorJid,
+            "name": lcUser!.fullName,
+            "session_id": lcSession!.sessionId,
+            "host_name": currLCAccount?.hostName ?? "",
+            "visitor_jid": lcSession!.visitorJid,
             "is_file":"1",
         ]
         

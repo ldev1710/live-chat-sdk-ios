@@ -136,7 +136,6 @@ struct LChatView: View {
     }
     
     func onReceiveMessage(lcMessage: LCMessage) {
-        if(lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid) {return}
         viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent))
         scrollToMsg(msg: viewModel.messages.last!)
     }
