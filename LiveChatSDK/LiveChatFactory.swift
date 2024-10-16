@@ -22,6 +22,10 @@ public class LiveChatFactory {
         LiveChatSDK.initializeSession(user: user,tokenFcm: tokenFcm, supportType: supportType)
     }
     
+    public static func getScripts() -> [LCScript]{
+        return LiveChatSDK.getScripts()
+    }
+    
     public static func authorize(apiKey: String){
         LiveChatSDK.authorize(apiKey: apiKey)
     }
@@ -35,7 +39,11 @@ public class LiveChatFactory {
     }
     
     public static func sendMessage(message: LCMessageSend){
-        LiveChatSDK.sendMessage(message: message)
+        LiveChatSDK.sendMessage(message: message, nextId: nil)
+    }
+    
+    public static func sendMessageScript(message: LCMessageSend, nextId: String){
+        LiveChatSDK.sendMessage(message: message, nextId: nextId)
     }
     
     public static func getMessages(offset: Int = 0, limit: Int = 5){

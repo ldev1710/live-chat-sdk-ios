@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		436FD9AC0CA0DB7E10ABEF61 /* Pods_LiveChatSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874D5557664D1AED14E16F06 /* Pods_LiveChatSDK.framework */; };
+		7E62577E2CBF57710004037D /* LCScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E62577D2CBF576C0004037D /* LCScript.swift */; };
 		C13712942C4DF99900D0D9FE /* LCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712932C4DF99900D0D9FE /* LCSession.swift */; };
 		C13712962C4DF9E500D0D9FE /* LCUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712952C4DF9E500D0D9FE /* LCUser.swift */; };
 		C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712972C4DFA3700D0D9FE /* LCSendMessageEnum.swift */; };
@@ -57,6 +58,7 @@
 
 /* Begin PBXFileReference section */
 		53E281DDFC3D040E38527EA6 /* Pods-LiveChatSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.release.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.release.xcconfig"; sourceTree = "<group>"; };
+		7E62577D2CBF576C0004037D /* LCScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCScript.swift; sourceTree = "<group>"; };
 		874D5557664D1AED14E16F06 /* Pods_LiveChatSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveChatSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BED95A478F77DAA790B7943B /* Pods-LiveChatSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.debug.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C13712932C4DF99900D0D9FE /* LCSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCSession.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 		C13712A92C4DFDCF00D0D9FE /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				7E62577D2CBF576C0004037D /* LCScript.swift */,
 				C13712AA2C4DFDDF00D0D9FE /* LCInitialEnum.swift */,
 				C13712AC2C4DFE6D00D0D9FE /* LCAccount.swift */,
 				C13712AE2C4DFEBD00D0D9FE /* LCSupportType.swift */,
@@ -411,6 +414,7 @@
 				C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */,
 				C13712AF2C4DFEBD00D0D9FE /* LCSupportType.swift in Sources */,
 				C1BF928C2C588D31009FBCED /* LCViewModel.swift in Sources */,
+				7E62577E2CBF57710004037D /* LCScript.swift in Sources */,
 				C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */,
 				C1BF928E2C588DC4009FBCED /* LCMessageView.swift in Sources */,
 				C13712A42C4DFB8700D0D9FE /* LCFile.swift in Sources */,

@@ -21,6 +21,7 @@ public class LiveChatSDK {
     public static var isDebuging = false
     private static var isAvailable = false
     private static var listeners: [LCListener] = []
+    private static var lcScripts: [LCScript] = []
     private static let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!)
     private static var socket: SocketIOClient?
     private static var socketManagerClient: SocketManager?
@@ -38,7 +39,6 @@ public class LiveChatSDK {
                 LCLog.logI(message: "The library require notification permission!")
                 return
             }
-            // Create a Socket.IO client
             socket = socketManager.defaultSocket
             observingInitSDK(state: LCInitialEnum.PROCESSING, message: "LiveChatSDK initial is processing")
             
@@ -59,6 +59,21 @@ public class LiveChatSDK {
                 }
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
+                let rawScripts = jsonData["scripts"] as! [Any]
+                let scripts: [LCScript] = []
+                for rawScript in rawScripts {
+                    let script = rawScript as! [String: Any]
+                    let rawButtonActions = script["button_action"] as? [Any]
+                    if(rawButtonActions == nil){
+                        continue
+                    }
+                    var buttonActions: [LCButtonAction] = []
+                    for rawButtonAction in rawButtonActions! {
+                        let jsonButtonAction = rawButtonAction as! [String: String]
+                        buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
+                    }
+                    lcScripts.append(LCScript(id: script["id"] as! String, name: script["name"] as! String, nextAction: script["next_action"] as! String, buttonAction: buttonActions))
+                }
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 accessToken = jsonData["access_token"] as? String
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
@@ -122,7 +137,7 @@ public class LiveChatSDK {
                     )
                     observingSendMessage(state: LCSendMessageEnum.SENT_SUCCESS, message: lCMessage, errorMessage: nil,mappingId: lCMessage.mappingId)
                 }
-                socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION){
+                socketClient!.on(LCConstant.RESULT_INITIALIZE_SESSION) {
                     data, ack in
                     let jsonData = data[0] as! [String: Any]
                     let success = jsonData["status"] as! Bool
@@ -179,6 +194,10 @@ public class LiveChatSDK {
         socketClient?.emit(LCConstant.JOIN_SESSION, lcSession.sessionId)
     }
     
+    public static func getScripts() -> [LCScript]{
+        return lcScripts
+    }
+    
     public static func sendFileMessage(paths: [URL],contentType: String){
         if(!isValid()) {
             return
@@ -224,7 +243,7 @@ public class LiveChatSDK {
     }
     
     public static func initializeSession(user: LCUser,tokenFcm: String, supportType: LCSupportType){
-        if(isInitialized && isAvailable){
+        if(isReady()){
             var body:[String:Any] = [:]
             body[base64(text: "groupid")] = currLCAccount?.groupId
             body[base64(text: "access_token")] = accessToken
@@ -259,7 +278,7 @@ public class LiveChatSDK {
         listeners.remove(at: index)
     }
     
-    public static func sendMessage(message: LCMessageSend){
+    public static func sendMessage(message: LCMessageSend, nextId: String?){
         if(isValid()){
             var body:[String:Any] = [:]
             let uuid = UUID().uuidString
@@ -267,6 +286,7 @@ public class LiveChatSDK {
             body[base64(text: "mapping_id")] = uuid
             body[base64(text: "host_name")] = currLCAccount?.hostName
             body[base64(text: "body")] = message.content
+            body[base64(text: "id_next")] = nextId
             body[base64(text: "add_message_archive")] = ""
             body[base64(text: "reply")] = 0
             body[base64(text: "access_token")] = accessToken
@@ -354,9 +374,16 @@ public class LiveChatSDK {
         }
     }
     
-    private static func isValid() -> Bool{
+    private static func isReady() -> Bool{
         if(!(isInitialized && isAvailable)){
             LCLog.logI(message: "LiveChat SDK is not ready!")
+            return false
+        }
+        return true
+    }
+    
+    private static func isValid() -> Bool{
+        if(!isReady()){
             return false
         }
         if(lcUser == nil || lcSession == nil) {

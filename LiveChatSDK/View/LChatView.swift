@@ -168,7 +168,6 @@ struct LChatView: View {
         DispatchQueue.main.async {
             proxyGlo!.scrollTo(msg.id, anchor: .bottom)
         }
-        
     }
     
     func onInitSDKStateChange(state: LCInitialEnum, message: String) {
