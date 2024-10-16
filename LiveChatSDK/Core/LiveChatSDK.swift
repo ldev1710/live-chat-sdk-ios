@@ -59,7 +59,7 @@ public class LiveChatSDK {
                 }
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
-                let rawScripts = jsonData["scripts"] as! [Any]
+                let rawScripts = jsonData["script"] as! [Any]
                 let scripts: [LCScript] = []
                 for rawScript in rawScripts {
                     let script = rawScript as! [String: Any]

@@ -12,6 +12,10 @@ struct LCMessageView: View {
     @ObservedObject var message: LCMessageEntity
     let messageSize: Int
     let messagePosition: Int
+    @State var currentScript: LCScript
+    let lcScripts: [LCScript]
+    @State var isScripting: Bool
+    let onTapScript: (LCButtonAction) -> Void
     
     var body: some View {
         VStack(alignment: message.lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading) {
@@ -85,6 +89,9 @@ struct LCMessageView: View {
                             .foregroundColor(.gray)
                     }
                 }
+            }
+            if(messagePosition == messageSize - 1 && !lcScripts.isEmpty && isScripting == true){
+                LCScriptView(scripts: lcScripts, currentScript: currentScript,isScripting: isScripting,onTapScript: onTapScript)
             }
         }
         .frame(maxWidth: .infinity, alignment: message.lcMessage.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading)

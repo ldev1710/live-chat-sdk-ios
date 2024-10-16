@@ -32,12 +32,15 @@ struct LChatView: View {
     @State private var selectedImages: [URL] = []
     @State private var isFetchingMore = false
     @State private var page = 1
+    @State private var lcScripts: [LCScript] = []
+    @State private var currentScript: LCScript?
     @State private var isCanFetchMore = true
     @State private var isInit = true
     @State private var scrollPosition: CGPoint = .zero
     @State private var limit = 10
     @State private var msgScrolling: LCMessageEntity?
     @State private var proxyGlo: ScrollViewProxy?
+    @State private var isScripting: Bool? = nil
     
     var body: some View {
         VStack {
@@ -58,9 +61,18 @@ struct LChatView: View {
                                 }
                         }
                         ForEach(viewModel.messages.indices, id: \.self) { index in
-                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index)
-                                .padding(.vertical, 4)
-                                .id(viewModel.messages[index].id)
+                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true){
+                                item in
+                                LiveChatFactory.sendMessageScript(message: LCMessageSend(content: item.textSend), nextId: item.nextId)
+                                let nextScript = self.lcScripts.first(where: { item.nextId == $0.id })
+                                if(nextScript == nil || nextScript?.nextAction == "end"){
+                                    isScripting = false
+                                    return
+                                }
+                                self.currentScript = nextScript!
+                            }
+                            .padding(.vertical, 4)
+                            .id(viewModel.messages[index].id)
                         }
                     }
                 }
@@ -88,6 +100,7 @@ struct LChatView: View {
                         LCDocumentPicker(
                             didPickDocuments: { urls in
                                 selectedFile = urls
+                                isScripting = false
                                 viewModel.sendFile(fileURL: selectedFile,contentType: "file")
                             }
                         )
@@ -105,12 +118,14 @@ struct LChatView: View {
                             images in
                             saveImagesToURLs(images: images){
                                 urls in
+                                isScripting = false
                                 viewModel.sendFile(fileURL: urls, contentType: "image")
                             }
                         }
                     }
-                    
                     Button(action: {
+                        if(viewModel.newMessageText.isEmpty) {return}
+                        isScripting = false
                         viewModel.sendMessage()
                     }) {
                         Image(systemName: "paperplane.fill")
@@ -122,6 +137,8 @@ struct LChatView: View {
             .padding([.leading,.trailing],8)
         }
         .onAppear(perform: {
+            self.lcScripts = LiveChatFactory.getScripts()
+            self.isScripting = !lcScripts.isEmpty
             listener = LCListener(
                 onReceiveMessage: self.onReceiveMessage,
                 onGotDetailConversation: self.onGotDetailConversation,
@@ -206,20 +223,11 @@ struct LChatView: View {
                 }
             }
         }
-        
         completion(urls)
     }
     
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
-    }
-}
-
-
-struct ScrollOffsetPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint = .zero
-    
-    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
     }
 }
