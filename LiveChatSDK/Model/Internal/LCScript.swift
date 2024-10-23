@@ -7,20 +7,22 @@
 
 public class LCScript: ObservableObject {
     
-    init(id: String, name: String, nextAction: String, buttonAction: [LCButtonAction]) {
+    init(id: String, name: String, nextAction: String,answers: [LCAnswer], buttonAction: [LCButtonAction]) {
         self.id = id
         self.name = name
         self.nextAction = nextAction
         self.buttonAction = buttonAction
+        self.answers = answers
     }
     
     var id: String
     var name: String
     var nextAction: String
+    var answers: [LCAnswer]
     var buttonAction: [LCButtonAction]
     
-    func toString() -> String {
-        return "LCScript(id: \(id), name: \(name), nextAction: \(nextAction), buttonAction: \(buttonAction))"
+    public func toString() -> String {
+        return "LCScript(id: \(id), name: \(name), nextAction: \(nextAction), answers: \(answers), buttonAction: \(buttonAction))"
     }
 }
 
@@ -43,4 +45,15 @@ public class LCButtonAction: Hashable {
         hasher.combine(textSend)
         hasher.combine(nextId)
     }
+}
+
+public class LCAnswer {
+    var type: String
+    var value: String
+    
+    init(type: String, value: String) {
+        self.type = type
+        self.value = value
+    }
+    
 }

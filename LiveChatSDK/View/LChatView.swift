@@ -41,6 +41,8 @@ struct LChatView: View {
     @State private var msgScrolling: LCMessageEntity?
     @State private var proxyGlo: ScrollViewProxy?
     @State private var isScripting: Bool? = nil
+    @State private var indxWait = 0
+    @State private var isWaiting = false
     
     var body: some View {
         VStack {
@@ -61,18 +63,27 @@ struct LChatView: View {
                                 }
                         }
                         ForEach(viewModel.messages.indices, id: \.self) { index in
-                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true){
+                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true,isWaiting: self.isWaiting){
                                 item in
                                 LiveChatFactory.sendMessageScript(message: LCMessageSend(content: item.textSend), nextId: item.nextId)
                                 let nextScript = self.lcScripts.first(where: { item.nextId == $0.id })
-                                if(nextScript == nil || nextScript?.nextAction == "end"){
+                                if(nextScript == nil){
                                     isScripting = false
                                     return
                                 }
-                                self.currentScript = nextScript!
+                                indxWait = 0
+                                self.currentScript = nextScript
+                                self.isWaiting = currentScript?.answers.first(where: {$0.type == "customer"}) != nil
                             }
                             .padding(.vertical, 4)
                             .id(viewModel.messages[index].id)
+                        }
+                        .onAppear {
+                            if isScripting == true {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    scrollToMsg(msg: viewModel.messages.last!)
+                                }
+                            }
                         }
                     }
                 }
@@ -125,8 +136,24 @@ struct LChatView: View {
                     }
                     Button(action: {
                         if(viewModel.newMessageText.isEmpty) {return}
-                        isScripting = false
-                        viewModel.sendMessage()
+                        if(!isWaiting) {isScripting = false}
+                        if(self.indxWait < currentScript!.answers.count){
+                            let answer = currentScript!.answers[self.indxWait]
+                            if(answer.type == "assign" || answer.type == "assign_team") {
+                                self.isScripting = false
+                                self.indxWait = 0
+                                self.isWaiting = false
+                                viewModel.sendMessage(position: (isWaiting) ? indxWait : nil,currScript: (isWaiting) ? currentScript : nil)
+                                return
+                            }
+                            self.indxWait += 1
+                        } else {
+                            self.isWaiting = false
+                        }
+                        viewModel.sendMessage(position: (isWaiting) ? indxWait : nil,currScript: (isWaiting) ? currentScript : nil)
+                        if(indxWait == currentScript!.answers.count){
+                            self.isWaiting = false
+                        }
                     }) {
                         Image(systemName: "paperplane.fill")
                     }
@@ -139,6 +166,9 @@ struct LChatView: View {
         .onAppear(perform: {
             self.lcScripts = LiveChatFactory.getScripts()
             self.isScripting = !lcScripts.isEmpty
+            if(isScripting!) {
+                self.currentScript = lcScripts.first
+            }
             listener = LCListener(
                 onReceiveMessage: self.onReceiveMessage,
                 onGotDetailConversation: self.onGotDetailConversation,

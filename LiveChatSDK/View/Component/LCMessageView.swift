@@ -15,6 +15,7 @@ struct LCMessageView: View {
     @State var currentScript: LCScript
     let lcScripts: [LCScript]
     @State var isScripting: Bool
+    @State var isWaiting: Bool
     let onTapScript: (LCButtonAction) -> Void
     
     var body: some View {
@@ -90,7 +91,7 @@ struct LCMessageView: View {
                     }
                 }
             }
-            if(messagePosition == messageSize - 1 && !lcScripts.isEmpty && isScripting == true){
+            if(messagePosition == messageSize - 1 && !lcScripts.isEmpty && isScripting == true && !self.isWaiting){
                 LCScriptView(scripts: lcScripts, currentScript: currentScript,isScripting: isScripting,onTapScript: onTapScript)
             }
         }

@@ -60,19 +60,29 @@ public class LiveChatSDK {
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
                 let rawScripts = jsonData["script"] as! [Any]
-                let scripts: [LCScript] = []
                 for rawScript in rawScripts {
                     let script = rawScript as! [String: Any]
-                    let rawButtonActions = script["button_action"] as? [Any]
-                    if(rawButtonActions == nil){
-                        continue
-                    }
                     var buttonActions: [LCButtonAction] = []
-                    for rawButtonAction in rawButtonActions! {
-                        let jsonButtonAction = rawButtonAction as! [String: String]
-                        buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
+                    var answers: [LCAnswer] = []
+                    let rawButtonActions = script["button_action"] as? [Any]
+                    if(rawButtonActions != nil){
+                        for rawButtonAction in rawButtonActions! {
+                            let jsonButtonAction = rawButtonAction as! [String: String]
+                            buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
+                        }
                     }
-                    lcScripts.append(LCScript(id: script["id"] as! String, name: script["name"] as! String, nextAction: script["next_action"] as! String, buttonAction: buttonActions))
+                    let rawAnswers = script["answer"] as? [Any]
+                    if(rawAnswers != nil){
+                        for rawAnswer in rawAnswers! {
+                            let jsonAnswers = rawAnswer as! [String: Any]
+                            if let value = jsonAnswers["value"] as? String,
+                               let type = jsonAnswers["type"] as? String {
+                                answers.append(LCAnswer(type: type, value: value))
+                            }
+                        }
+                    }
+                    let lcScript = LCScript(id: script["id"] as! String, name: script["name"] as! String, nextAction: script["next_action"] as! String, answers: answers, buttonAction: buttonActions)
+                    lcScripts.append(lcScript)
                 }
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 accessToken = jsonData["access_token"] as? String
@@ -101,6 +111,7 @@ public class LiveChatSDK {
                 socketClient!.on(LCConstant.RECEIVE_MESSAGE){
                     data, ack in
                     let jsonRaw = data[0] as! [String: Any]
+//                    print("RAW MSG: \(jsonRaw)")
                     let messageRaw = jsonRaw["data"] as! [String:Any]
                     let fromRaw = messageRaw["sender"] as! [String:Any]
                     let contentRaw = messageRaw["content"] as! [String:Any]
@@ -190,7 +201,6 @@ public class LiveChatSDK {
     public static func setUserSession(lcSession: LCSession, lcUser:LCUser){
         self.lcUser = lcUser
         self.lcSession = lcSession
-        print("lcSession.sessionId join: \(lcSession.sessionId)")
         socketClient?.emit(LCConstant.JOIN_SESSION, lcSession.sessionId)
     }
     
@@ -278,7 +288,7 @@ public class LiveChatSDK {
         listeners.remove(at: index)
     }
     
-    public static func sendMessage(message: LCMessageSend, nextId: String?){
+    public static func sendMessage(message: LCMessageSend, nextId: String?,position: Int?,currScriptId: String?){
         if(isValid()){
             var body:[String:Any] = [:]
             let uuid = UUID().uuidString
@@ -296,6 +306,9 @@ public class LiveChatSDK {
             body[base64(text: "session_id")] = lcSession!.sessionId
             body[base64(text: "visitor_jid")] = lcSession!.visitorJid
             body[base64(text: "is_file")] = 0
+            body[base64(text: "position")] = position
+            body[base64(text: "curr_script_id")] = currScriptId
+            
             socketClient?.emit(LCConstant.SEND_MESSAGE,body)
 
             observingSendMessage(

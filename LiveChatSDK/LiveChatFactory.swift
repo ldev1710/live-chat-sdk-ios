@@ -38,12 +38,12 @@ public class LiveChatFactory {
         LiveChatSDK.removeEventListener(listener:listener)
     }
     
-    public static func sendMessage(message: LCMessageSend){
-        LiveChatSDK.sendMessage(message: message, nextId: nil)
+    public static func sendMessage(message: LCMessageSend,position: Int? = nil, currScriptId: String? = nil){
+        LiveChatSDK.sendMessage(message: message, nextId: nil,position: position,currScriptId: currScriptId)
     }
     
     public static func sendMessageScript(message: LCMessageSend, nextId: String){
-        LiveChatSDK.sendMessage(message: message, nextId: nextId)
+        LiveChatSDK.sendMessage(message: message, nextId: nextId, position: nil, currScriptId: nil)
     }
     
     public static func getMessages(offset: Int = 0, limit: Int = 5){
