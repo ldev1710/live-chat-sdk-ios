@@ -12,7 +12,7 @@ class LChatViewModel: ObservableObject {
     @Published var newMessageText: String = ""
     
     func sendMessage(position: Int?,currScript: LCScript?) {
-        LiveChatFactory.sendMessage(message: LCMessageSend(content: newMessageText),position: position, currScript:currScript)
+        LiveChatFactory.sendMessage(message: LCMessageSend(content: newMessageText),position: position, currScriptId:currScript?.id)
         newMessageText = ""
     }
     
