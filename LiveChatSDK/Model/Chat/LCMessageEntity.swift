@@ -9,10 +9,10 @@ import Foundation
 
 public class LCMessageEntity : Identifiable, ObservableObject{
     public var id: UUID = UUID()
-    @Published public var lcMessage: LCMessage
-    @Published public var status: LCStatusMessage
+    @Published public var lcMessage: LCMessage?
+    @Published public var status: LCStatusMessage?
     
-    public init(lcMessage: LCMessage, status: LCStatusMessage) {
+    public init(lcMessage: LCMessage?, status: LCStatusMessage?) {
         self.lcMessage = lcMessage
         self.status = status
     }

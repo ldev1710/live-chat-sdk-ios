@@ -151,7 +151,7 @@ struct LChatView: View {
                             self.isWaiting = false
                         }
                         viewModel.sendMessage(position: (isWaiting) ? indxWait : nil,currScript: (isWaiting) ? currentScript : nil)
-                        if(indxWait == currentScript!.answers.count){
+                        if(indxWait >= currentScript!.answers.count){
                             self.isWaiting = false
                         }
                     }) {
@@ -184,6 +184,7 @@ struct LChatView: View {
     
     func onReceiveMessage(lcMessage: LCMessage) {
         viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent))
+        appendScriptIfCan()
         scrollToMsg(msg: viewModel.messages.last!)
     }
     
@@ -209,6 +210,7 @@ struct LChatView: View {
             }
         }
         isFetching = false
+        appendScriptIfCan()
     }
     
     func scrollToMsg(msg: LCMessageEntity){
@@ -230,17 +232,24 @@ struct LChatView: View {
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
         if(state == LCSendMessageEnum.SENDING) {
             viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
+            appendScriptIfCan()
             scrollToMsg(msg: viewModel.messages.last!)
         } else if(state == LCSendMessageEnum.SENT_SUCCESS){
-            let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage.mappingId == message?.mappingId})
+            let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage?.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
                 viewModel.messages[indexFound!].lcMessage = message!;
                 viewModel.messages[indexFound!].status = LCStatusMessage.sent
+                appendScriptIfCan()
                 scrollToMsg(msg: viewModel.messages.last!)
             }
         }
     }
     
+    func appendScriptIfCan(){
+        if(isScripting == true && (viewModel.messages.isEmpty || viewModel.messages.last?.lcMessage != nil)){
+            viewModel.messages.append(LCMessageEntity(lcMessage: nil, status: nil))
+        }
+    }
     func saveImagesToURLs(images: [UIImage], completion: @escaping ([URL]) -> Void) {
         var urls: [URL] = []
         for (index, image) in images.enumerated() {
