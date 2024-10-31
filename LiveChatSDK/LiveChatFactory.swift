@@ -58,11 +58,11 @@ public class LiveChatFactory {
         LiveChatSDK.setUserSession(lcSession: lcSession, lcUser: lcUser)
     }
     
-    public static func openChatView(viewController: UIViewController) {
-        LiveChatSDK.openChatView(viewController: viewController)
+    public static func openChatView(viewController: UIViewController, onTapBack: @escaping ()-> Void) {
+        LiveChatSDK.openChatView(viewController: viewController,onTapBack: onTapBack)
     }
     
-    public static func viewEngine() -> some View {
-        return LiveChatSDK.viewEngine()
+    public static func viewEngine(onTapBack: @escaping() -> Void) -> some View {
+        return LiveChatSDK.viewEngine(onTapBack: onTapBack)
     }
 }

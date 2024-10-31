@@ -182,19 +182,19 @@ public class LiveChatSDK {
         })
     }
     
-    public static func viewEngine() -> some View {
+    public static func viewEngine(onTapBack: @escaping() -> Void) -> some View {
         if(!isValid()){
             return AnyView(LCBlankView())
         } else {
-            return AnyView(LChatView())
+            return AnyView(LChatView(onTapBack: onTapBack))
         }
     }
     
-    public static func openChatView(viewController: UIViewController) {
+    public static func openChatView(viewController: UIViewController,onTapBack: @escaping() -> Void) {
         if(!isValid()){
             return
         }
-        let chatViewController = LChatViewController()
+        let chatViewController = LChatViewController(onTapBack: onTapBack)
         viewController.present(chatViewController, animated: true, completion: nil)
     }
     

@@ -43,9 +43,24 @@ struct LChatView: View {
     @State private var isScripting: Bool? = nil
     @State private var indxWait = 0
     @State private var isWaiting = false
+    let onTapBack: () -> Void
+    
+    init(onTapBack: @escaping () -> Void) {
+        self.onTapBack = onTapBack
+    }
     
     var body: some View {
         VStack {
+            HStack {
+                Button(action: {
+                    onTapBack()
+                }) {
+                    Image(systemName: "chevron.backward") // Bạn có thể thay đổi tên hệ thống của biểu tượng nếu muốn
+                        .foregroundColor(.blue)
+                    Text("Back")
+                        .foregroundColor(.blue)
+                }
+            }
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack {
