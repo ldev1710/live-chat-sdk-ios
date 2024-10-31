@@ -50,7 +50,7 @@ struct LChatView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             HStack {
                 Button(action: {
                     onTapBack()
