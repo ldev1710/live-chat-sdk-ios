@@ -234,12 +234,17 @@ public class LiveChatSDK {
             "is_file":"1",
         ]
         
+        var lcAttachments : [LCAttachment] = []
+        for path in paths{
+            lcAttachments.append(LCAttachment(url: path.absoluteString, fileName: path.lastPathComponent, fileExtension: path.pathExtension))
+        }
+        
         let lcMessage = LCMessage(
             id: -1,
             mappingId: uuid,
             content: LCContent(
                 contentType: contentType,
-                contentMessage: paths
+                contentMessage: lcAttachments
             ),
             from: LCSender(
                 id: lcSession!.visitorJid,
@@ -249,7 +254,7 @@ public class LiveChatSDK {
         )
         
         observingSendMessage(state: LCSendMessageEnum.SENDING, message: lcMessage, errorMessage: nil,mappingId: lcMessage.mappingId)
-        uploadFiles(url: url, files: paths, parameters: parameters)
+        uploadFiles(url: url, files: paths, parameters: parameters,lcMessageParams: lcMessage)
     }
     
     public static func initializeSession(user: LCUser,tokenFcm: String, supportType: LCSupportType){
@@ -414,7 +419,7 @@ public class LiveChatSDK {
         return "\(text): None"
     }
     
-    private static func uploadFiles(url: URL, files: [URL], parameters: [String: String]) {
+    private static func uploadFiles(url: URL, files: [URL], parameters: [String: String],lcMessageParams: LCMessage) {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("Bearer "+accessToken, forHTTPHeaderField: "Authorization")
@@ -430,7 +435,7 @@ public class LiveChatSDK {
             let task = session.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     LCLog.logI(message: "Error: \(String(describing: error))")
-                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: String(describing: error),mappingId: nil)
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: lcMessageParams, errorMessage: String(describing: error),mappingId: nil)
                     return
                 }
                 
@@ -446,7 +451,7 @@ public class LiveChatSDK {
                     let errorMsg = respDict["message"] as! String
                     let dataDict = respDict["data"] as! [String: Any]
                     let mappingId = dataDict["mapping_id"] as! String
-                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: nil, errorMessage: errorMsg, mappingId:mappingId)
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: lcMessageParams, errorMessage: errorMsg, mappingId:mappingId)
                     return
                 }
                 let dataDict = respDict["data"] as! [String: Any]

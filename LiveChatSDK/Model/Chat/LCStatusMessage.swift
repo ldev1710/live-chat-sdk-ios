@@ -8,5 +8,5 @@
 import Foundation
 
 public enum LCStatusMessage {
-    case sending,sent
+    case sending,sent,sentFailed
 }

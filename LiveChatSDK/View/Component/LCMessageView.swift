@@ -41,20 +41,34 @@ struct LCMessageView: View {
                 } else if message.lcMessage!.content.contentType == "file" {
                     if let contents = message.lcMessage!.content.contentMessage as? [LCAttachment]{
                         ForEach(contents) { content in
-                            HStack {
-                                Image(systemName: "doc")
-                                Text(content.fileName)
-                            }
-                            .frame(maxWidth: 200,alignment: .leading)
-                            .padding()
-                            .foregroundColor(Color(message.lcMessage!.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
-                            .background(Color(message.lcMessage!.from.id == LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
-                            .cornerRadius(10)
-                            .contextMenu {
-                                Button(action: {
-                                    UIPasteboard.general.string = content.url
-                                }) {
-                                    Label("Sao chép", systemImage: "doc.on.doc")
+                            Button(action: {
+                                let urlString = content.url
+                                if let url = URL(string: urlString) {
+                                    if UIApplication.shared.canOpenURL(url) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    } else {
+                                        print("Không thể mở URL: \(urlString)")
+                                    }
+                                } else {
+                                    print("URL không hợp lệ: \(urlString)")
+                                }
+                            }){
+                                HStack {
+                                    Image(systemName: "doc")
+                                    Text(content.fileName)
+                                        .multilineTextAlignment(.leading)
+                                }
+                                .frame(maxWidth: 200,alignment: .leading)
+                                .padding()
+                                .foregroundColor(Color(message.lcMessage!.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
+                                .background(Color(message.lcMessage!.from.id == LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
+                                .cornerRadius(10)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIPasteboard.general.string = content.url
+                                    }) {
+                                        Label("Sao chép URL file", systemImage: "doc.on.doc")
+                                    }
                                 }
                             }
                         }
@@ -62,17 +76,31 @@ struct LCMessageView: View {
                 } else if message.lcMessage!.content.contentType == "image" {
                     if let contents = message.lcMessage!.content.contentMessage as? [LCAttachment] {
                         ForEach(contents) { content in
-                            URLImage(url: URL(string: content.url)!)
-                                .frame(width: 200, height: 300)
-                                .cornerRadius(8)
-                                .shadow(radius: 10)
-                                .contextMenu {
-                                    Button(action: {
-                                        UIPasteboard.general.string = content.url
-                                    }) {
-                                        Label("Sao chép", systemImage: "doc.on.doc")
+                            Button(action: {
+                                let urlString = content.url
+                                if let url = URL(string: urlString) {
+                                    if UIApplication.shared.canOpenURL(url) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    } else {
+                                        print("Không thể mở URL: \(urlString)")
                                     }
+                                } else {
+                                    print("URL không hợp lệ: \(urlString)")
                                 }
+                            }){
+                                URLImage(url: URL(string: content.url)!)
+                                    .frame(width: 200, height: 300)
+                                    .cornerRadius(8)
+                                    .shadow(radius: 10)
+                                    .contextMenu {
+                                        Button(action: {
+                                            UIPasteboard.general.string = content.url
+                                        }) {
+                                            Label("Sao chép URL ảnh", systemImage: "doc.on.doc")
+                                        }
+                                    }
+                            }
+                            
                         }
                     }
                 }
@@ -84,12 +112,16 @@ struct LCMessageView: View {
                         Text("Đang gửi")
                             .font(.caption)
                             .foregroundColor(.gray)
-                    } else {
+                    } else if(message.status == LCStatusMessage.sent) {
                         if(messagePosition == messageSize - 1){
                             Text("Đã gửi")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
+                    } else {
+                        Text("Gửi thất bại")
+                            .font(.caption)
+                            .foregroundColor(.red)
                     }
                 }
             }

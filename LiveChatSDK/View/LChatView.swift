@@ -244,16 +244,17 @@ struct LChatView: View {
         
     }
     
+    
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
         if(state == LCSendMessageEnum.SENDING) {
             viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
             appendScriptIfCan()
             scrollToMsg(msg: viewModel.messages.last!)
-        } else if(state == LCSendMessageEnum.SENT_SUCCESS){
+        } else {
             let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage?.mappingId == message?.mappingId})
             if(indexFound != nil && indexFound != -1){
                 viewModel.messages[indexFound!].lcMessage = message!;
-                viewModel.messages[indexFound!].status = LCStatusMessage.sent
+                viewModel.messages[indexFound!].status = (state == LCSendMessageEnum.SENT_SUCCESS) ? LCStatusMessage.sent : LCStatusMessage.sentFailed
                 appendScriptIfCan()
                 scrollToMsg(msg: viewModel.messages.last!)
             }

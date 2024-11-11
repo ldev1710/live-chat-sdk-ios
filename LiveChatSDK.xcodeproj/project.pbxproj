@@ -40,7 +40,6 @@
 		C1BF92922C58901B009FBCED /* LCURLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BF92912C58901B009FBCED /* LCURLImage.swift */; };
 		C1CC4A612C72FD3900BD0E8E /* LCMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CC4A602C72FD3900BD0E8E /* LCMessageEntity.swift */; };
 		C1CC4A632C72FD8C00BD0E8E /* LCStatusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CC4A622C72FD8C00BD0E8E /* LCStatusMessage.swift */; };
-		F185B6442CAE552F0062ABB3 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = F185B6432CAE552F0062ABB3 /* SocketIO */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -102,7 +101,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				436FD9AC0CA0DB7E10ABEF61 /* Pods_LiveChatSDK.framework in Frameworks */,
-				F185B6442CAE552F0062ABB3 /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +316,6 @@
 			);
 			name = LiveChatSDK;
 			packageProductDependencies = (
-				F185B6432CAE552F0062ABB3 /* SocketIO */,
 			);
 			productName = LiveChatSDK;
 			productReference = C18AC9E62C37EC1900576E9D /* LiveChatSDK.framework */;
@@ -349,7 +346,6 @@
 			);
 			mainGroup = C18AC9DC2C37EC1900576E9D;
 			packageReferences = (
-				F185B6422CAE552F0062ABB3 /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			productRefGroup = C18AC9E72C37EC1900576E9D /* Products */;
 			projectDirPath = "";
@@ -663,25 +659,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		F185B6422CAE552F0062ABB3 /* XCRemoteSwiftPackageReference "socket" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F185B6432CAE552F0062ABB3 /* SocketIO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F185B6422CAE552F0062ABB3 /* XCRemoteSwiftPackageReference "socket" */;
-			productName = SocketIO;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C18AC9DD2C37EC1900576E9D /* Project object */;
 }
