@@ -43,6 +43,7 @@ struct LChatView: View {
     @State private var isScripting: Bool? = nil
     @State private var indxWait = 0
     @State private var isWaiting = false
+    @State private var buttonRestarted: [LCButtonAction]? = nil
     let onTapBack: () -> Void
     
     init(onTapBack: @escaping () -> Void) {
@@ -78,9 +79,10 @@ struct LChatView: View {
                                 }
                         }
                         ForEach(viewModel.messages.indices, id: \.self) { index in
-                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true,isWaiting: self.isWaiting){
+                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true,isWaiting: self.isWaiting,buttonRestarted: buttonRestarted){
                                 item in
                                 LiveChatFactory.sendMessageScript(message: LCMessageSend(content: item.textSend), nextId: item.nextId)
+                                buttonRestarted = nil
                                 let nextScript = self.lcScripts.first(where: { item.nextId == $0.id })
                                 if(nextScript == nil){
                                     isScripting = false
@@ -190,11 +192,17 @@ struct LChatView: View {
                 onInitSDKStateChange: self.onInitSDKStateChange,
                 onAuthstateChanged: self.onAuthstateChanged,
                 onInitialSessionStateChanged: self.onInitialSessionStateChanged,
-                onSendMessageStateChange: self.onSendMessageStateChange
+                onSendMessageStateChange: self.onSendMessageStateChange,
+                onRestartScripting: self.onRestartScripting
             )
             LiveChatFactory.addEventListener(listener: listener!)
             LiveChatFactory.getMessages(limit: limit)
         })
+    }
+    
+    func onRestartScripting(buttonActions: [LCButtonAction]) {
+        isScripting = true
+        buttonRestarted = buttonActions
     }
     
     func onReceiveMessage(lcMessage: LCMessage) {

@@ -16,6 +16,7 @@ struct LCMessageView: View {
     let lcScripts: [LCScript]
     @State var isScripting: Bool
     @State var isWaiting: Bool
+    @State var buttonRestarted: [LCButtonAction]?
     let onTapScript: (LCButtonAction) -> Void
     
     var body: some View {
@@ -128,7 +129,7 @@ struct LCMessageView: View {
             .frame(maxWidth: .infinity, alignment: message.lcMessage!.from.id == LiveChatSDK.getLCSession().visitorJid ? .trailing : .leading)
         } else  {
             if(messagePosition == messageSize - 1 && !lcScripts.isEmpty && isScripting == true && !self.isWaiting){
-                LCScriptView(scripts: lcScripts, currentScript: currentScript,isScripting: isScripting,onTapScript: onTapScript)
+                LCScriptView(scripts: lcScripts, currentScript: currentScript,isScripting: isScripting,buttonRestarted: buttonRestarted,onTapScript: onTapScript)
             }
         }
     }

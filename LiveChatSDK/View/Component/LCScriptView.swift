@@ -14,11 +14,12 @@ struct LCScriptView: View {
     var verticalSpacing: CGFloat = 8
     var alignment: HorizontalAlignment = .leading
     @State var isScripting: Bool
+    @State var buttonRestarted: [LCButtonAction]?
     let onTapScript: (LCButtonAction) -> Void
     
     var body: some View {
         if(isScripting) {
-            FlexibleView(data: currentScript.buttonAction, spacing: 8, alignment: .leading){ item in
+            FlexibleView(data: buttonRestarted != nil ? buttonRestarted! : currentScript.buttonAction, spacing: 8, alignment: .leading){ item in
                 Button(action: {
                     onTapScript(item)
                 }) {

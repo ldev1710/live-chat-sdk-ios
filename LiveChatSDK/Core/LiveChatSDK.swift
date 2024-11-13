@@ -176,6 +176,23 @@ public class LiveChatSDK {
                     }
                     observingGotMessages(messages: messages)
                 }
+                
+                socketClient!.on(LCConstant.RESTART_SCRIPTING){
+                    data,ack in
+                    let jsonData = data[0] as! [String: Any]
+                    LCLog.logI(message: "RESTART_SCRIPTING: \(jsonData)")
+                    var buttonActions: [LCButtonAction] = []
+                    let rawButtonActions = jsonData["button_action"] as? [Any]
+                    if(rawButtonActions != nil){
+                        for rawButtonAction in rawButtonActions! {
+                            let jsonButtonAction = rawButtonAction as! [String: String]
+                            buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
+                        }
+                        LCLog.logI(message: "buttonActions: \(buttonActions)")
+                        observingRestartScriting(buttonActions: buttonActions)
+                    }
+                }
+                
                 socketClient?.connect()
             }
             socket!.connect()
@@ -371,6 +388,12 @@ public class LiveChatSDK {
     public static func observingInitSDK(state: LCInitialEnum, message: String){
         for listener in listeners {
             listener.onInitSDKStateChange(state: state, message: message)
+        }
+    }
+    
+    public static func observingRestartScriting(buttonActions: [LCButtonAction]){
+        for listener in listeners {
+            listener.onRestartScripting(buttonActions: buttonActions)
         }
     }
     

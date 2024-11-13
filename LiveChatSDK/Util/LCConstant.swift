@@ -21,4 +21,5 @@ public class LCConstant{
     public static var INITIALIZE_SESSION = "addQueue_ChatBot"
     public static var RESULT_INITIALIZE_SESSION = "responseAddQueue_ChatBot"
     public static var JOIN_SESSION = "joinSession"
+    public static var RESTART_SCRIPTING = "RESTART_SCRIPTING"
 }
