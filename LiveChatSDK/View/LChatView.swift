@@ -180,6 +180,7 @@ struct LChatView: View {
             .frame(height: 70, alignment: .bottom)
             .padding([.leading,.trailing],8)
         }
+        .preferredColorScheme(.light)
         .onAppear(perform: {
             self.lcScripts = LiveChatFactory.getScripts()
             self.isScripting = !lcScripts.isEmpty
@@ -206,7 +207,7 @@ struct LChatView: View {
     }
     
     func onReceiveMessage(lcMessage: LCMessage) {
-        viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent))
+        viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent,errormessage: nil))
         appendScriptIfCan()
         scrollToMsg(msg: viewModel.messages.last!)
     }
@@ -216,7 +217,7 @@ struct LChatView: View {
         if(isFetchingMore){
             var tmp: [LCMessageEntity] = []
             for(_, message) in messages.enumerated() {
-                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
+                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent,errormessage: nil))
             }
             let msgTmp = viewModel.messages.first!
             viewModel.messages.insert(contentsOf: tmp.reversed(),at: 0)
@@ -225,7 +226,7 @@ struct LChatView: View {
         } else {
             var tmp: [LCMessageEntity] = []
             for(_, message) in messages.enumerated() {
-                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent))
+                tmp.append(LCMessageEntity(lcMessage: message, status: LCStatusMessage.sent,errormessage: nil))
             }
             viewModel.messages = tmp.reversed()
             if(!viewModel.messages.isEmpty){
@@ -255,7 +256,7 @@ struct LChatView: View {
     
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
         if(state == LCSendMessageEnum.SENDING) {
-            viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending))
+            viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending,errormessage: nil))
             appendScriptIfCan()
             scrollToMsg(msg: viewModel.messages.last!)
         } else {
@@ -263,6 +264,7 @@ struct LChatView: View {
             if(indexFound != nil && indexFound != -1){
                 viewModel.messages[indexFound!].lcMessage = message!;
                 viewModel.messages[indexFound!].status = (state == LCSendMessageEnum.SENT_SUCCESS) ? LCStatusMessage.sent : LCStatusMessage.sentFailed
+                viewModel.messages[indexFound!].errorMessage = errorMessage
                 appendScriptIfCan()
                 scrollToMsg(msg: viewModel.messages.last!)
             }
@@ -271,7 +273,7 @@ struct LChatView: View {
     
     func appendScriptIfCan(){
         if(isScripting == true && (viewModel.messages.isEmpty || viewModel.messages.last?.lcMessage != nil)){
-            viewModel.messages.append(LCMessageEntity(lcMessage: nil, status: nil))
+            viewModel.messages.append(LCMessageEntity(lcMessage: nil, status: nil,errormessage: nil))
         }
     }
     func saveImagesToURLs(images: [UIImage], completion: @escaping ([URL]) -> Void) {

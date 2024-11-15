@@ -458,7 +458,7 @@ public class LiveChatSDK {
             let task = session.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     LCLog.logI(message: "Error: \(String(describing: error))")
-                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: lcMessageParams, errorMessage: String(describing: error),mappingId: nil)
+                    observingSendMessage(state: LCSendMessageEnum.SENT_FAILED, message: lcMessageParams, errorMessage: String(describing: error),mappingId: lcMessageParams.mappingId)
                     return
                 }
                 

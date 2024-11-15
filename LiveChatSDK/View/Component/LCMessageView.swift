@@ -120,7 +120,7 @@ struct LCMessageView: View {
                                 .foregroundColor(.gray)
                         }
                     } else {
-                        Text("Gửi thất bại")
+                        Text(message.errorMessage ?? "Gửi thất bại")
                             .font(.caption)
                             .foregroundColor(.red)
                     }
