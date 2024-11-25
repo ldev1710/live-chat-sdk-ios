@@ -21,9 +21,11 @@ struct URLImage: View {
     var body: some View {
         image
             .resizable()
-            .aspectRatio(contentMode: .fill)
+            .aspectRatio(contentMode: .fit)
             .frame(width: 200, height: 300)
+            .background(Color.gray.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 10)) // Bo nhẹ 4 góc
+            .shadow(color: .gray, radius: 10, x: 0, y: 0)
             .onAppear {
                 loader.load(from: imageUrl)
             }

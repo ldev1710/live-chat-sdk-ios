@@ -92,7 +92,6 @@ struct LCMessageView: View {
                                 URLImage(url: URL(string: content.url)!)
                                     .frame(width: 200, height: 300)
                                     .cornerRadius(8)
-                                    .shadow(radius: 10)
                                     .contextMenu {
                                         Button(action: {
                                             UIPasteboard.general.string = content.url
