@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
 spec.name = "LiveChatSDK"
-spec.version = "1.2.6"
+spec.version = "1.2.7"
 spec.summary = "LiveChatSDK to make message to MITEK Ecosystem easily"
 spec.description = "It is a library only for learning purpose"
 spec.homepage = "https://gitlab.mitek.vn/mitek-public/sdk/michat/live-chat-sdk-ios.git"
