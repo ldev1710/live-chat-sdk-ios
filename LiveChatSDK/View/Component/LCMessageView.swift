@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVKit
 import SwiftUI
 
 struct LCMessageView: View {
@@ -100,7 +101,38 @@ struct LCMessageView: View {
                                         }
                                     }
                             }
-                            
+                        }
+                    }
+                } else if(message.lcMessage!.content.contentType == "video") {
+                    if let contents = message.lcMessage!.content.contentMessage as? [LCAttachment] {
+                        ForEach(contents) { content in
+                            VideoPlayer(player: AVPlayer(url:  URL(string: content.url)!))
+                                .frame(width: 200, height: 300)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIPasteboard.general.string = content.url
+                                    }) {
+                                        Label("Sao chép URL video", systemImage: "doc.on.doc")
+                                    }
+                                }
+                        }
+                    }
+                } else if(message.lcMessage!.content.contentType == "audio"){
+                    if let contents = message.lcMessage!.content.contentMessage as? [LCAttachment] {
+                        ForEach(contents) { content in
+                            LCAudioPlayer(soundManager: SoundManager(url: content.url))
+                                .frame(maxWidth: 200,alignment: .leading)
+                                .padding()
+                                .foregroundColor(Color(message.lcMessage!.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))
+                                .background(Color(message.lcMessage!.from.id == LiveChatSDK.getLCSession().visitorJid ? .systemBlue : .systemGray5))
+                                .cornerRadius(10)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIPasteboard.general.string = content.url
+                                    }) {
+                                        Label("Sao chép URL audio", systemImage: "doc.on.doc")
+                                    }
+                                }
                         }
                     }
                 }

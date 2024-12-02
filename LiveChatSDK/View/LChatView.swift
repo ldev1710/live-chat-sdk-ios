@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MobileCoreServices
 import PhotosUI
+import UniformTypeIdentifiers
 
 extension LCMessageEntity : Hashable {
     public static func ==(lhs: LCMessageEntity, rhs: LCMessageEntity) -> Bool {
@@ -143,11 +144,29 @@ struct LChatView: View {
                     .frame(width: geometry.size.width * 0.1)
                     .sheet(isPresented: $showImagePicker) {
                         LCPhotoPicker(){
-                            images in
-                            saveImagesToURLs(images: images){
-                                urls in
-                                isScripting = false
-                                viewModel.sendFile(fileURL: urls, contentType: "image")
+                            result in
+                            switch result {
+                            case .success(let media):
+                                switch media.first! {
+                                case .image(let uiImage):
+                                    saveImagesToURLs(images: [uiImage]){
+                                        urls in
+                                        isScripting = false
+                                        viewModel.sendFile(fileURL: urls, contentType: determineFileType(from: urls.first!))
+                                    }
+                                    
+                                case .video(let url, let thumbnail):
+                                    isScripting = false
+                                    let destinationURL = getDocumentsDirectory().appendingPathComponent("video-lc.mp4")
+                                    do {
+                                        try FileManager.default.copyItem(at: url, to: destinationURL)
+                                    } catch {
+                                        print("Error copying video file: \(error)")
+                                    }
+                                    viewModel.sendFile(fileURL: [destinationURL], contentType: determineFileType(from: destinationURL))
+                                }
+                            case .failure(let error):
+                                print("Error picking media: \(error.localizedDescription)")
                             }
                         }
                     }
@@ -242,7 +261,19 @@ struct LChatView: View {
             proxyGlo!.scrollTo(msg.id, anchor: .bottom)
         }
     }
-    
+    func determineFileType(from url: URL) -> String {
+        let fileExtension = url.pathExtension.lowercased() // Lấy phần mở rộng tệp và chuyển về chữ thường
+        
+        if let uti = UTType(filenameExtension: fileExtension) {
+            if uti.conforms(to: .image) {
+                return "image"
+            } else if uti.conforms(to: .movie) || uti.conforms(to: .video) {
+                return "video"
+            }
+        }
+        
+        return "Unknown"
+    }
     func onInitSDKStateChange(state: LCInitialEnum, message: String) {
     }
     
@@ -287,6 +318,21 @@ struct LChatView: View {
                 }
             }
         }
+        completion(urls)
+    }
+    
+    func saveVideosToURLs(videos: [URL], completion: @escaping ([URL]) -> Void) {
+        var urls : [URL] = []
+        for (index, videoURL) in videos.enumerated() {
+                let filename = getDocumentsDirectory().appendingPathComponent("video\(index).mp4") // Đặt đuôi file là .mp4
+                do {
+                    // Sao chép video từ URL nguồn sang thư mục đích
+                    try FileManager.default.copyItem(at: videoURL, to: filename)
+                    urls.append(filename)
+                } catch {
+                    print("Error saving video \(index): \(error)")
+                }
+            }
         completion(urls)
     }
     

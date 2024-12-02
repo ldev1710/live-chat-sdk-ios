@@ -10,6 +10,7 @@
 		436FD9AC0CA0DB7E10ABEF61 /* Pods_LiveChatSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874D5557664D1AED14E16F06 /* Pods_LiveChatSDK.framework */; };
 		7E62577E2CBF57710004037D /* LCScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E62577D2CBF576C0004037D /* LCScript.swift */; };
 		7E6257822CBFC5000004037D /* LCScriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6257812CBFC4FC0004037D /* LCScriptView.swift */; };
+		7E7404B42CF6B0AC002DC827 /* LCAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7404B32CF6B0A6002DC827 /* LCAudioPlayer.swift */; };
 		C13712942C4DF99900D0D9FE /* LCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712932C4DF99900D0D9FE /* LCSession.swift */; };
 		C13712962C4DF9E500D0D9FE /* LCUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712952C4DF9E500D0D9FE /* LCUser.swift */; };
 		C13712982C4DFA3700D0D9FE /* LCSendMessageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13712972C4DFA3700D0D9FE /* LCSendMessageEnum.swift */; };
@@ -60,6 +61,7 @@
 		53E281DDFC3D040E38527EA6 /* Pods-LiveChatSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.release.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.release.xcconfig"; sourceTree = "<group>"; };
 		7E62577D2CBF576C0004037D /* LCScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCScript.swift; sourceTree = "<group>"; };
 		7E6257812CBFC4FC0004037D /* LCScriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCScriptView.swift; sourceTree = "<group>"; };
+		7E7404B32CF6B0A6002DC827 /* LCAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCAudioPlayer.swift; sourceTree = "<group>"; };
 		874D5557664D1AED14E16F06 /* Pods_LiveChatSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveChatSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BED95A478F77DAA790B7943B /* Pods-LiveChatSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveChatSDK.debug.xcconfig"; path = "Target Support Files/Pods-LiveChatSDK/Pods-LiveChatSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C13712932C4DF99900D0D9FE /* LCSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCSession.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 		C1BF92932C589086009FBCED /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				7E7404B32CF6B0A6002DC827 /* LCAudioPlayer.swift */,
 				7E6257812CBFC4FC0004037D /* LCScriptView.swift */,
 				C1BF928D2C588DC4009FBCED /* LCMessageView.swift */,
 				C1BF928F2C588FFE009FBCED /* LCImageLoader.swift */,
@@ -424,6 +427,7 @@
 				C1BF92862C588BC9009FBCED /* LChatView.swift in Sources */,
 				C13712A82C4DFCEB00D0D9FE /* LCProtocol.swift in Sources */,
 				C13712B52C4E106300D0D9FE /* LCConstant.swift in Sources */,
+				7E7404B42CF6B0AC002DC827 /* LCAudioPlayer.swift in Sources */,
 				C1CC4A612C72FD3900BD0E8E /* LCMessageEntity.swift in Sources */,
 				C1CC4A632C72FD8C00BD0E8E /* LCStatusMessage.swift in Sources */,
 				7E6257822CBFC5000004037D /* LCScriptView.swift in Sources */,

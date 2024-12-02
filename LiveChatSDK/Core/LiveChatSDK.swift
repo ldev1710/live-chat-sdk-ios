@@ -360,7 +360,6 @@ public class LiveChatSDK {
             body[base64(text: "session_id")] = lcSession!.sessionId
             body[base64(text: "offset")] = offset
             body[base64(text: "limit")] = limit
-            LCLog.logI(message: "Start get message")
             socketClient?.emit(LCConstant.GET_MESSAGES,body)
         }
     }
@@ -507,9 +506,8 @@ public class LiveChatSDK {
         }
         
         for fileURL in files {
-            LCLog.logI(message: "File absoluteString posting: \(fileURL.absoluteString)")
             let filename = fileURL.lastPathComponent
-            let mimetype = "application/octet-stream" // Luôn sử dụng "application/octet-stream" cho mọi loại file
+            let mimetype = "application/octet-stream"
             
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"body\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)

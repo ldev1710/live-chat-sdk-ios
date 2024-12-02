@@ -10,7 +10,7 @@ import Foundation
 public class LCParseUtil {
     public static func contentFrom(contentRaw: [String:Any]) -> LCContent {
         let contentType = contentRaw["content-type"] as! String
-        if(contentType == "file" || contentType == "image"){
+        if(contentType == "file" || contentType == "image" || contentType == "video" || contentType == "audio"){
             var lcAttachments:[LCAttachment] = []
             let rawAttachments = contentRaw["content-message"] as! [Any]
             for rawAttachment in rawAttachments {
