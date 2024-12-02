@@ -91,13 +91,24 @@ struct LCPhotoPicker: UIViewControllerRepresentable {
                     }
                 } else if result.itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
                     // Load URL for videos
-                    result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url, error in
+                    result.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url,inPlace, error in
                         if let error = error {
-                            errors.append(error)
+                                errors.append(error)
                         } else if let url = url {
-                            // Tạo thumbnail từ video
-                            if let thumbnail = self.generateThumbnail(from: url) {
-                                pickedMedia.append(.video(url, thumbnail))
+                            let destinationURL = self.getTemporaryFileURL(originalURL: url)
+                            
+                            do {
+                                if FileManager.default.fileExists(atPath: destinationURL.path) {
+                                    try FileManager.default.removeItem(atPath: destinationURL.path)
+                                }
+                                try FileManager.default.copyItem(at: url, to: destinationURL)
+                                // Tạo thumbnail từ video
+                                if let thumbnail = self.generateThumbnail(from: destinationURL) {
+                                    pickedMedia.append(.video(destinationURL, thumbnail))
+                                }
+                            } catch {
+                                print("Error in place: \(error)")
+                                errors.append(error)
                             }
                         }
                         dispatchGroup.leave()
@@ -116,6 +127,13 @@ struct LCPhotoPicker: UIViewControllerRepresentable {
             }
         }
 
+        private func getTemporaryFileURL(originalURL: URL) -> URL {
+            // Tạo một URL tạm thời trong thư mục Documents để lưu video
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let filename = originalURL.lastPathComponent
+            return tempDirectory.appendingPathComponent(filename)
+        }
+        
         // Tạo thumbnail từ video
         private func generateThumbnail(from url: URL) -> UIImage? {
             let asset = AVAsset(url: url)

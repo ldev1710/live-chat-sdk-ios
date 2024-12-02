@@ -1,10 +1,3 @@
-//
-//  LCAudioPlayer.swift
-//  LiveChatSDK
-//
-//  Created by Luong Dien on 27/11/24.
-//
-
 import AVKit
 import Foundation
 import SwiftUI
@@ -13,14 +6,15 @@ import Combine
 class SoundManager: ObservableObject {
     var audioPlayer: AVPlayer?
     var url: String
-    var isPlaying: Bool = false
-    @Published var currentTime: Double = 0 // Thời gian hiện tại của audio
-    @Published var duration: Double = 0 // Tổng thời gian của audio
+    @Published var isPlaying: Bool = false
+    @Published var currentTime: Double = 0
+    @Published var duration: Double = 0
 
     private var timeObserverToken: Any?
 
     init(url: String) {
         self.url = url
+        playSound()
     }
 
     func playSound() {
@@ -49,6 +43,9 @@ class SoundManager: ObservableObject {
     }
     
     func resume() {
+        if(currentTime >= duration){
+            audioPlayer?.seek(to: .zero)
+        }
         isPlaying = true
         audioPlayer?.play()
         addPeriodicTimeObserver()
@@ -56,10 +53,13 @@ class SoundManager: ObservableObject {
     
     func addPeriodicTimeObserver() {
         guard let player = audioPlayer else { return }
-
         // Quan sát thời gian hiện tại
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 600), queue: .main) { [weak self] time in
             self?.currentTime = CMTimeGetSeconds(time)
+            if(self!.currentTime >= self!.duration){
+                self!.audioPlayer?.seek(to: .zero)
+                self!.pause()
+            }
         }
     }
 
@@ -70,33 +70,34 @@ class SoundManager: ObservableObject {
 
     deinit {
         if let timeObserverToken = timeObserverToken {
-            audioPlayer?.removeTimeObserver(timeObserverToken)
+//            audioPlayer?.removeTimeObserver(timeObserverToken)
         }
     }
 }
 struct LCAudioPlayer: View {
-    @State var song1 = false
+    @State var from: String
     @ObservedObject private var soundManager: SoundManager
     @State var isFirstTime: Bool = true
 
-    init(soundManager: SoundManager) {
+    init(soundManager: SoundManager,from: String) {
         self.soundManager = soundManager
+        self.from = from
     }
 
     var body: some View {
         HStack {
             // Nút phát/tạm dừng
-            Image(systemName: song1 ? "pause.circle.fill": "play.circle.fill")
+            Image(systemName: soundManager.isPlaying ? "pause.circle.fill": "play.circle.fill")
                 .font(.system(size: 24))
-                .foregroundColor(.gray)
+                .foregroundColor(from ==  LiveChatSDK.getLCSession().visitorJid ? .white : .gray)
                 .onTapGesture {
                     if(isFirstTime){
                         soundManager.playSound()
                         isFirstTime = false
                     }
-                    song1.toggle()
+                    soundManager.isPlaying.toggle()
 
-                    if song1 {
+                    if soundManager.isPlaying {
                         soundManager.resume()
                     } else {
                         soundManager.pause()
@@ -115,6 +116,7 @@ struct LCAudioPlayer: View {
                         in: 0...soundManager.duration,
                         step: 1
                     )
+                    .accentColor(Color(from ==  LiveChatSDK.getLCSession().visitorJid ? .white : .systemBlue))
 //                    .frame(height: 24)
 //                    HStack {
 //                        Text(formatTime(soundManager.currentTime))
@@ -128,9 +130,6 @@ struct LCAudioPlayer: View {
                 Text("Loading...")
                     .padding()
             }
-        }
-        .onAppear {
-            soundManager.playSound()
         }
     }
 

@@ -120,7 +120,7 @@ struct LCMessageView: View {
                 } else if(message.lcMessage!.content.contentType == "audio"){
                     if let contents = message.lcMessage!.content.contentMessage as? [LCAttachment] {
                         ForEach(contents) { content in
-                            LCAudioPlayer(soundManager: SoundManager(url: content.url))
+                            LCAudioPlayer(soundManager: SoundManager(url: content.url),from: message.lcMessage!.from.id)
                                 .frame(maxWidth: 200,alignment: .leading)
                                 .padding()
                                 .foregroundColor(Color(message.lcMessage!.from.id ==  LiveChatSDK.getLCSession().visitorJid ? .white : .black))

@@ -147,6 +147,9 @@ struct LChatView: View {
                             result in
                             switch result {
                             case .success(let media):
+                                if(media.isEmpty){
+                                    return
+                                }
                                 switch media.first! {
                                 case .image(let uiImage):
                                     saveImagesToURLs(images: [uiImage]){
@@ -158,6 +161,13 @@ struct LChatView: View {
                                 case .video(let url, let thumbnail):
                                     isScripting = false
                                     let destinationURL = getDocumentsDirectory().appendingPathComponent("video-lc.mp4")
+                                    if FileManager.default.fileExists(atPath: destinationURL.path) {
+                                        do {
+                                            try FileManager.default.removeItem(atPath: destinationURL.path)
+                                        } catch {
+                                            print("Could not delete file, probably read-only filesystem")
+                                        }
+                                    }
                                     do {
                                         try FileManager.default.copyItem(at: url, to: destinationURL)
                                     } catch {
