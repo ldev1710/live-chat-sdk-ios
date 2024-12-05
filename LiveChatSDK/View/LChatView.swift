@@ -33,18 +33,12 @@ struct LChatView: View {
     @State private var selectedImages: [URL] = []
     @State private var isFetchingMore = false
     @State private var page = 1
-    @State private var lcScripts: [LCScript] = []
-    @State private var currentScript: LCScript?
     @State private var isCanFetchMore = true
     @State private var isInit = true
     @State private var scrollPosition: CGPoint = .zero
     @State private var limit = 10
     @State private var msgScrolling: LCMessageEntity?
     @State private var proxyGlo: ScrollViewProxy?
-    @State private var isScripting: Bool? = nil
-    @State private var indxWait = 0
-    @State private var isWaiting = false
-    @State private var buttonRestarted: [LCButtonAction]? = nil
     let onTapBack: () -> Void
     
     init(onTapBack: @escaping () -> Void) {
@@ -80,28 +74,9 @@ struct LChatView: View {
                                 }
                         }
                         ForEach(viewModel.messages.indices, id: \.self) { index in
-                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index,currentScript: (self.currentScript == nil) ? lcScripts.first! : self.currentScript!, lcScripts: lcScripts,isScripting: isScripting == true,isWaiting: self.isWaiting,buttonRestarted: buttonRestarted){
-                                item in
-                                LiveChatFactory.sendMessageScript(message: LCMessageSend(content: item.textSend), nextId: item.nextId)
-                                buttonRestarted = nil
-                                let nextScript = self.lcScripts.first(where: { item.nextId == $0.id })
-                                if(nextScript == nil){
-                                    isScripting = false
-                                    return
-                                }
-                                indxWait = 0
-                                self.currentScript = nextScript
-                                self.isWaiting = currentScript?.answers.first(where: {$0.type == "customer"}) != nil
-                            }
+                            LCMessageView(message: viewModel.messages[index],messageSize: viewModel.messages.count, messagePosition: index)
                             .padding(.vertical, 4)
                             .id(viewModel.messages[index].id)
-                        }
-                        .onAppear {
-                            if isScripting == true {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    scrollToMsg(msg: viewModel.messages.last!)
-                                }
-                            }
                         }
                     }
                 }
@@ -129,7 +104,6 @@ struct LChatView: View {
                         LCDocumentPicker(
                             didPickDocuments: { urls in
                                 selectedFile = urls
-                                isScripting = false
                                 viewModel.sendFile(fileURL: selectedFile,contentType: "file")
                             }
                         )
@@ -154,12 +128,10 @@ struct LChatView: View {
                                 case .image(let uiImage):
                                     saveImagesToURLs(images: [uiImage]){
                                         urls in
-                                        isScripting = false
                                         viewModel.sendFile(fileURL: urls, contentType: determineFileType(from: urls.first!))
                                     }
                                     
                                 case .video(let url, let thumbnail):
-                                    isScripting = false
                                     let destinationURL = getDocumentsDirectory().appendingPathComponent("video-lc.mp4")
                                     if FileManager.default.fileExists(atPath: destinationURL.path) {
                                         do {
@@ -182,24 +154,7 @@ struct LChatView: View {
                     }
                     Button(action: {
                         if(viewModel.newMessageText.isEmpty) {return}
-                        if(!isWaiting) {isScripting = false}
-                        if(self.indxWait < currentScript!.answers.count){
-                            let answer = currentScript!.answers[self.indxWait]
-                            if(answer.type == "assign" || answer.type == "assign_team") {
-                                self.isScripting = false
-                                self.indxWait = 0
-                                self.isWaiting = false
-                                viewModel.sendMessage(position: (isWaiting) ? indxWait : nil,currScript: (isWaiting) ? currentScript : nil)
-                                return
-                            }
-                            self.indxWait += 1
-                        } else {
-                            self.isWaiting = false
-                        }
-                        viewModel.sendMessage(position: (isWaiting) ? indxWait : nil,currScript: (isWaiting) ? currentScript : nil)
-                        if(indxWait >= currentScript!.answers.count){
-                            self.isWaiting = false
-                        }
+                        viewModel.sendMessage()
                     }) {
                         Image(systemName: "paperplane.fill")
                     }
@@ -211,33 +166,21 @@ struct LChatView: View {
         }
         .preferredColorScheme(.light)
         .onAppear(perform: {
-            self.lcScripts = LiveChatFactory.getScripts()
-            self.isScripting = !lcScripts.isEmpty
-            if(isScripting!) {
-                self.currentScript = lcScripts.first
-            }
             listener = LCListener(
                 onReceiveMessage: self.onReceiveMessage,
                 onGotDetailConversation: self.onGotDetailConversation,
                 onInitSDKStateChange: self.onInitSDKStateChange,
                 onAuthstateChanged: self.onAuthstateChanged,
                 onInitialSessionStateChanged: self.onInitialSessionStateChanged,
-                onSendMessageStateChange: self.onSendMessageStateChange,
-                onRestartScripting: self.onRestartScripting
+                onSendMessageStateChange: self.onSendMessageStateChange
             )
             LiveChatFactory.addEventListener(listener: listener!)
             LiveChatFactory.getMessages(limit: limit)
         })
     }
     
-    func onRestartScripting(buttonActions: [LCButtonAction]) {
-        isScripting = true
-        buttonRestarted = buttonActions
-    }
-    
     func onReceiveMessage(lcMessage: LCMessage) {
         viewModel.messages.append(LCMessageEntity(lcMessage: lcMessage, status: LCStatusMessage.sent,errormessage: nil))
-        appendScriptIfCan()
         scrollToMsg(msg: viewModel.messages.last!)
     }
     
@@ -263,7 +206,6 @@ struct LChatView: View {
             }
         }
         isFetching = false
-        appendScriptIfCan()
     }
     
     func scrollToMsg(msg: LCMessageEntity){
@@ -297,7 +239,6 @@ struct LChatView: View {
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?) {
         if(state == LCSendMessageEnum.SENDING) {
             viewModel.messages.append(LCMessageEntity(lcMessage: message!, status: LCStatusMessage.sending,errormessage: nil))
-            appendScriptIfCan()
             scrollToMsg(msg: viewModel.messages.last!)
         } else {
             let indexFound = viewModel.messages.firstIndex(where: {$0.lcMessage?.mappingId == message?.mappingId})
@@ -305,17 +246,11 @@ struct LChatView: View {
                 viewModel.messages[indexFound!].lcMessage = message!;
                 viewModel.messages[indexFound!].status = (state == LCSendMessageEnum.SENT_SUCCESS) ? LCStatusMessage.sent : LCStatusMessage.sentFailed
                 viewModel.messages[indexFound!].errorMessage = errorMessage
-                appendScriptIfCan()
                 scrollToMsg(msg: viewModel.messages.last!)
             }
         }
     }
     
-    func appendScriptIfCan(){
-        if(isScripting == true && (viewModel.messages.isEmpty || viewModel.messages.last?.lcMessage != nil)){
-            viewModel.messages.append(LCMessageEntity(lcMessage: nil, status: nil,errormessage: nil))
-        }
-    }
     func saveImagesToURLs(images: [UIImage], completion: @escaping ([URL]) -> Void) {
         var urls: [URL] = []
         for (index, image) in images.enumerated() {

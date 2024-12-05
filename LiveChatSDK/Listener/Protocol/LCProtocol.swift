@@ -14,5 +14,4 @@ protocol LCProtocol {
     func onInitialSessionStateChanged(success: Bool, lcSession: LCSession)
     func onGotDetailConversation(messages: [LCMessage])
     func onSendMessageStateChange(state: LCSendMessageEnum, message: LCMessage?, errorMessage: String?,mappingId: String?)
-    func onRestartScripting(buttonActions: [LCButtonAction])
 }

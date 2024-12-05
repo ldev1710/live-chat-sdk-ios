@@ -21,7 +21,6 @@ public class LiveChatSDK {
     public static var isDebuging = false
     private static var isAvailable = false
     private static var listeners: [LCListener] = []
-    private static var lcScripts: [LCScript] = []
     private static let socketManager = SocketManager(socketURL: URL(string: "https://s01-livechat-dev.midesk.vn/")!)
     private static var socket: SocketIOClient?
     private static var socketManagerClient: SocketManager?
@@ -59,31 +58,6 @@ public class LiveChatSDK {
                 }
                 let dataResp = data[0] as! [String:Any]
                 let jsonData = dataResp["data"] as! [String:Any]
-                let rawScripts = jsonData["script"] as! [Any]
-                for rawScript in rawScripts {
-                    let script = rawScript as! [String: Any]
-                    var buttonActions: [LCButtonAction] = []
-                    var answers: [LCAnswer] = []
-                    let rawButtonActions = script["button_action"] as? [Any]
-                    if(rawButtonActions != nil){
-                        for rawButtonAction in rawButtonActions! {
-                            let jsonButtonAction = rawButtonAction as! [String: String]
-                            buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
-                        }
-                    }
-                    let rawAnswers = script["answer"] as? [Any]
-                    if(rawAnswers != nil){
-                        for rawAnswer in rawAnswers! {
-                            let jsonAnswers = rawAnswer as! [String: Any]
-                            if let value = jsonAnswers["value"] as? String,
-                               let type = jsonAnswers["type"] as? String {
-                                answers.append(LCAnswer(type: type, value: value))
-                            }
-                        }
-                    }
-                    let lcScript = LCScript(id: script["id"] as! String, name: script["name"] as! String, nextAction: script["next_action"] as! String, answers: answers, buttonAction: buttonActions)
-                    lcScripts.append(lcScript)
-                }
                 LCConstant.CLIENT_URL_SOCKET = jsonData["domain_socket"] as! String
                 accessToken = jsonData["access_token"] as? String
                 let rawSupportTypes = jsonData["support_type"] as! [Any]
@@ -176,23 +150,6 @@ public class LiveChatSDK {
                     }
                     observingGotMessages(messages: messages)
                 }
-                
-                socketClient!.on(LCConstant.RESTART_SCRIPTING){
-                    data,ack in
-                    let jsonData = data[0] as! [String: Any]
-                    LCLog.logI(message: "RESTART_SCRIPTING: \(jsonData)")
-                    var buttonActions: [LCButtonAction] = []
-                    let rawButtonActions = jsonData["button_action"] as? [Any]
-                    if(rawButtonActions != nil){
-                        for rawButtonAction in rawButtonActions! {
-                            let jsonButtonAction = rawButtonAction as! [String: String]
-                            buttonActions.append(LCButtonAction(textSend: jsonButtonAction["button"]!, nextId: jsonButtonAction["next"]!))
-                        }
-                        LCLog.logI(message: "buttonActions: \(buttonActions)")
-                        observingRestartScriting(buttonActions: buttonActions)
-                    }
-                }
-                
                 socketClient?.connect()
             }
             socket!.connect()
@@ -219,10 +176,6 @@ public class LiveChatSDK {
         self.lcUser = lcUser
         self.lcSession = lcSession
         socketClient?.emit(LCConstant.JOIN_SESSION, lcSession.sessionId)
-    }
-    
-    public static func getScripts() -> [LCScript]{
-        return lcScripts
     }
     
     public static func sendFileMessage(paths: [URL],contentType: String){
@@ -310,7 +263,7 @@ public class LiveChatSDK {
         listeners.remove(at: index)
     }
     
-    public static func sendMessage(message: LCMessageSend, nextId: String?,position: Int?,currScriptId: String?){
+    public static func sendMessage(message: LCMessageSend){
         if(isValid()){
             var body:[String:Any] = [:]
             let uuid = UUID().uuidString
@@ -318,7 +271,6 @@ public class LiveChatSDK {
             body[base64(text: "mapping_id")] = uuid
             body[base64(text: "host_name")] = currLCAccount?.hostName
             body[base64(text: "body")] = message.content
-            body[base64(text: "id_next")] = nextId
             body[base64(text: "add_message_archive")] = ""
             body[base64(text: "reply")] = 0
             body[base64(text: "access_token")] = accessToken
@@ -328,8 +280,6 @@ public class LiveChatSDK {
             body[base64(text: "session_id")] = lcSession!.sessionId
             body[base64(text: "visitor_jid")] = lcSession!.visitorJid
             body[base64(text: "is_file")] = 0
-            body[base64(text: "position")] = position
-            body[base64(text: "curr_script_id")] = currScriptId
             
             socketClient?.emit(LCConstant.SEND_MESSAGE,body)
 
@@ -387,12 +337,6 @@ public class LiveChatSDK {
     public static func observingInitSDK(state: LCInitialEnum, message: String){
         for listener in listeners {
             listener.onInitSDKStateChange(state: state, message: message)
-        }
-    }
-    
-    public static func observingRestartScriting(buttonActions: [LCButtonAction]){
-        for listener in listeners {
-            listener.onRestartScripting(buttonActions: buttonActions)
         }
     }
     

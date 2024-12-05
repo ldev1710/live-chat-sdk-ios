@@ -11,8 +11,8 @@ class LChatViewModel: ObservableObject {
     @Published var messages: [LCMessageEntity] = []
     @Published var newMessageText: String = ""
     
-    func sendMessage(position: Int?,currScript: LCScript?) {
-        LiveChatFactory.sendMessage(message: LCMessageSend(content: newMessageText),position: position, currScriptId:currScript?.id)
+    func sendMessage() {
+        LiveChatFactory.sendMessage(message: LCMessageSend(content: newMessageText))
         newMessageText = ""
     }
     
